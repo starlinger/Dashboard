@@ -209,8 +209,8 @@ def make_perct_histogram(df, show_l, sep = None):
 
     if n_bins > 20: n_bins = 20
     if n_bins < 4: n_bins = 4
-    print('var:', df.iloc[:,-1].var())
-    print('n_bins:', n_bins)
+    # print('var:', df.iloc[:,-1].var())
+    # print('n_bins:', n_bins)
     binned_df = hf.bin_df(df, n_bins, sep=None)
     # print(binned_df)
     # print('__')

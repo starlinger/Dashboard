@@ -78,16 +78,7 @@ path_to_datasets = default.path_to_datasets
 dataset_dict = default.dataset_dict
 
 #get th data
-thresholds_df_dict = {}
-for entry in dataset_dict:
-    if entry[-9:] == '(reduced)':
-        if os.path.isfile(cwd + path_to_datasets + dataset_dict[entry]['label'] + 'thresholds_reduced.csv'):
-            df_reduced_th = pd.read_csv(cwd + path_to_datasets + dataset_dict[entry]['label'] + 'thresholds_reduced.csv')
-            thresholds_df_dict[entry] = {'label': dataset_dict[entry]['label'], 'df' : df_reduced_th.copy()}
-    else:
-        if os.path.isfile(cwd + path_to_datasets + dataset_dict[entry]['label'] + 'thresholds.csv'):
-            df_th = pd.read_csv(cwd + path_to_datasets + dataset_dict[entry]['label'] + 'thresholds.csv')
-            thresholds_df_dict[entry] = {'label': dataset_dict[entry]['label'], 'df' : df_th.copy()}
+thresholds_df_dict = default.thresholds_df_dict
 
 # df = None
 # features = df.columns

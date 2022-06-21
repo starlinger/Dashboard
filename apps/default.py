@@ -208,6 +208,17 @@ df_label_list = []
 for entry in dataset_dict:
     df_label_list.append(dataset_dict[entry]['label'])
 
+thresholds_df_dict = {}
+for entry in dataset_dict:
+    if entry[-9:] == '(reduced)':
+        if os.path.isfile(cwd + path_to_datasets + dataset_dict[entry]['label'] + 'thresholds_reduced.csv'):
+            df_reduced_th = pd.read_csv(cwd + path_to_datasets + dataset_dict[entry]['label'] + 'thresholds_reduced.csv')
+            thresholds_df_dict[entry] = {'label': dataset_dict[entry]['label'], 'df' : df_reduced_th.copy()}
+    else:
+        if os.path.isfile(cwd + path_to_datasets + dataset_dict[entry]['label'] + 'thresholds.csv'):
+            df_th = pd.read_csv(cwd + path_to_datasets + dataset_dict[entry]['label'] + 'thresholds.csv')
+            thresholds_df_dict[entry] = {'label': dataset_dict[entry]['label'], 'df' : df_th.copy()}
+            
 #load models
 model_clone = joblib.load(cwd + path_to_datasets + 'virus_pos_no_rep/df0/best_models/rdf.pkl')
 model_dict = {'pos_no_rep_rdf' : {'label' : 'No Replikation (positive)', 'model' : model_clone}}
