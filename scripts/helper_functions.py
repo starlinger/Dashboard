@@ -83,7 +83,10 @@ def get_eng_dfs(path = 'assets/data/datasets/virus_pos_no_rep/'):
     for entry in os.listdir(path):
         if entry[0] == 'd':
             #model_label_list.append(entry)
-            desc = read_from_json(path + entry + '/features.json')['description']
+            tmp_data = read_from_json(path + entry + '/features.json')
+            desc = 'label not found'
+            if 'description' in tmp_data:
+                desc = read_from_json(path + entry + '/features.json')['description']
             #ret[entry] = desc
             ret[desc] = entry
     return ret
