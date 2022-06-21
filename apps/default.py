@@ -218,10 +218,11 @@ for entry in dataset_dict:
         if os.path.isfile(cwd + path_to_datasets + dataset_dict[entry]['label'] + 'thresholds.csv'):
             df_th = pd.read_csv(cwd + path_to_datasets + dataset_dict[entry]['label'] + 'thresholds.csv')
             thresholds_df_dict[entry] = {'label': dataset_dict[entry]['label'], 'df' : df_th.copy()}
-            
+
 #load models
 model_clone = joblib.load(cwd + path_to_datasets + 'virus_pos_no_rep/df0/best_models/rdf.pkl')
-model_dict = {'pos_no_rep_rdf' : {'label' : 'No Replikation (positive)', 'model' : model_clone}}
+model_dict = hf.get_models(path= cwd + path_to_datasets + dataset_dict[list(dataset_dict.keys())[0]]['label'] + 'df0/best_models/')
+eng_dfs_dict = hf.get_eng_dfs(path= cwd + path_to_datasets + dataset_dict[list(dataset_dict.keys())[0]]['label'])
 
 model_label_list = []
 for entry in os.listdir(cwd + path_to_datasets + 'virus_pos_no_rep/df0/best_models/'):

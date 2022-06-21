@@ -1,3 +1,4 @@
+from pyexpat import model
 import pandas as pd
 import numpy as np
 import os
@@ -155,8 +156,11 @@ df_label_list = default.df_label_list
 #model_clone = joblib.load('assets/data/datasets/virus_pos_no_rep/df0/best_models/rdf.pkl')
 #model_dict = {'pos_no_rep_rdf' : {'label' : 'No Replikation (positive)', 'model' : model_clone}}
 
-model_dict = hf.get_models(path='assets/data/datasets/' + dataset_dict[list(dataset_dict.keys())[0]]['label'] + 'df0/best_models/')
-eng_dfs_dict = hf.get_eng_dfs(path='assets/data/datasets/' + dataset_dict[list(dataset_dict.keys())[0]]['label'])
+# model_dict = hf.get_models(path='assets/data/datasets/' + dataset_dict[list(dataset_dict.keys())[0]]['label'] + 'df0/best_models/')
+# eng_dfs_dict = hf.get_eng_dfs(path='assets/data/datasets/' + dataset_dict[list(dataset_dict.keys())[0]]['label'])
+
+model_dict = default.model_dict
+eng_dfs_dict = default.eng_dfs_dict
 
 features = dataset_dict[list(dataset_dict.keys())[0]]['df'].columns
 ft_rows = default.ft_rows
