@@ -1,0 +1,1 @@
+{"cv_score": 0.8508596837944665, "test_score": 0.8641025641025641, "params": {"algorithm": "auto", "leaf_size": 30, "metric": "euclidean", "n_neighbors": 57, "p": 2, "weights": "distance"}}
