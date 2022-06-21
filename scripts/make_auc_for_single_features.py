@@ -5,9 +5,13 @@ import os
 
 from sklearn.preprocessing import MinMaxScaler
 from get_dataframes import get_no_rep_all, get_pos_no_rep, get_pos_rep, get_virus_negative
-
+import helper_functions as hf
 
 cwd = os.getcwd()
+
+paths = hf.read_from_json(cwd + '/paths.json')
+path_to_csv = paths['path_to_csv']
+path_to_datasets = paths['path_to_datasets']
 
 def make_df(dff, file_name):
 
@@ -107,23 +111,26 @@ def make_df(dff, file_name):
         return_df = pd.concat([return_df, last])
     return_df.to_csv(file_name, index=False)
 
+#pos_no_rep
 df = get_pos_no_rep(path = cwd + '/assets/data/2022-03-25_norep_all.csv')
+make_df(df, cwd + path_to_datasets + 'virus_pos_no_rep/thresholds.csv')
 df_reduced = get_pos_no_rep(path = cwd + '/assets/data/2022-03-25_norep_all.csv', reduced =True)
+make_df(df_reduced, cwd + path_to_datasets + '/virus_pos_no_rep/thresholds_reduced.csv')
 
-df_neg = get_virus_negative(path = cwd + '/assets/data/2022-03-25_virusneg.csv')
-df_neg_reduced = get_virus_negative(path = cwd + '/assets/data/2022-03-25_virusneg.csv', reduced =True)
+#virus_negative
+df = get_virus_negative(path = cwd + '/assets/data/2022-03-25_virusneg.csv')
+make_df(df, cwd + path_to_datasets + 'virus_negative/thresholds.csv')
+df_reduced = get_virus_negative(path = cwd + '/assets/data/2022-03-25_virusneg.csv', reduced =True)
+make_df(df_reduced, cwd + path_to_datasets + '/virus_negative/thresholds_reduced.csv')
 
-df_no_rep_all = get_no_rep_all(path = cwd + '/assets/data/2022-03-25_norep_all.csv')
-df_no_rep_all_reduced = get_no_rep_all(path = cwd + '/assets/data/2022-03-25_norep_all.csv', reduced =True)
+#no_rep_all
+df = get_no_rep_all(path = cwd + '/assets/data/2022-03-25_norep_all.csv')
+make_df(df, cwd + path_to_datasets + 'no_rep_all/thresholds.csv')
+df_reduced = get_no_rep_all(path = cwd + '/assets/data/2022-03-25_norep_all.csv', reduced =True)
+make_df(df_reduced, cwd + path_to_datasets + '/no_rep_all/thresholds_reduced.csv')
 
-df_pos_rep = get_pos_rep(path = cwd + '/assets/data/2022-05-30-B19_pos.csv')
-df_pos_rep_reduced = get_pos_rep(path = cwd + '/assets/data/2022-05-30-B19_pos.csv', reduced =True)
-
-make_df(df, cwd + '/assets/data/datasets/virus_pos_no_rep/thresholds.csv')
-make_df(df_reduced, cwd + '/assets/data/datasets/virus_pos_no_rep/thresholds_reduced.csv')
-#make_df(df_neg, cwd + '/assets/data/datasets/thresholds_virus_negative.csv')
-#make_df(df_neg_reduced, cwd + '/assets/data/datasets/thresholds_reduced_virus_negative.csv')
-#make_df(df_no_rep_all, cwd + '/assets/data/datasets/thresholds_no_rep_all.csv')
-#make_df(df_no_rep_all_reduced,cwd + '/assets/data/datasets/thresholds_reduced_no_rep_all.csv')
-#make_df(df_pos_rep, cwd + '/assets/data/datasets/thresholds_virus_pos.csv')
-#make_df(df_pos_rep_reduced, cwd + '/assets/data/datasets/thresholds_reduced_virus_pos.csv')
+#virus_pos
+df = get_pos_rep(path = cwd + '/assets/data/2022-05-30-B19_pos.csv')
+make_df(df, cwd + path_to_datasets + 'virus_pos_rep/thresholds.csv')
+df_reduced = get_pos_rep(path = cwd + '/assets/data/2022-05-30-B19_pos.csv', reduced =True)
+make_df(df_reduced, cwd + path_to_datasets + '/virus_pos_rep/thresholds_reduced.csv')
