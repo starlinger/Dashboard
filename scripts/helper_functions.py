@@ -1,5 +1,4 @@
 import json
-from turtle import pd
 import joblib
 import os
 

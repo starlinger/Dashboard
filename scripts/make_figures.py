@@ -1,4 +1,3 @@
-from audioop import reverse
 from sklearn import metrics
 from sklearn.metrics import auc, average_precision_score
 from sklearn.metrics import RocCurveDisplay
