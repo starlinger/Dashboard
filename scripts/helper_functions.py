@@ -90,6 +90,8 @@ def get_eng_dfs(path = 'assets/data/datasets/virus_pos_no_rep/'):
                 desc = read_from_json(path + entry + '/features.json')['description']
             #ret[entry] = desc
             ret[desc] = entry
+    print('eng_dfs:')
+    print(ret)
     return ret
 
 def get_y_pred_thresholded(y_pred, th, reverse = False):

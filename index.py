@@ -212,7 +212,7 @@ def make_specs(n, type = 'xy', max_cols = 2, quad = False, rugs = False, b = 0.0
     return rows, cols, specs
 
 model_dict = hf.get_models(path = cwd + path_to_datasets + 'virus_pos_no_rep/df0/best_models/')
-eng_dfs_dict = hf.get_eng_dfs(path = cwd + path_to_datasets + '/virus_pos_no_rep/')
+eng_dfs_dict = hf.get_eng_dfs(path = cwd + path_to_datasets + 'virus_pos_no_rep/')
 
 
 update_feat_inputs(list(dataset_dict.keys())[0])
