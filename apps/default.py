@@ -165,6 +165,7 @@ def make_specs(n, type = 'xy', max_cols = 2, quad = False, rugs = False, b = 0.0
 app = Dash(__name__, external_stylesheets = [dbc.themes.BOOTSTRAP])
 
 #get data
+dataset_dict = {}
 for folder in os.listdir( cwd + path_to_datasets):
     if folder == 'virus_pos_no_rep':
         print('Virus Positive (No Rep)')
