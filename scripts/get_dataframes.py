@@ -63,6 +63,10 @@ def get_pos_rep(path='/assets/data/2022-05-30-B19_pos.csv', reduced =  False):
     df = df[df['Group'] != 3]
     df = df[df['Group'] != 5]
 
+    #nur replikation (Virus: 4 = B19V)
+    df = df[df['B19V mRNA   yes1/no0'] == 1]
+    df = df.drop('B19V mRNA   yes1/no0', axis = 1)
+
     df = df.dropna(how='any')
     if reduced: df = df[(np.abs(stats.zscore(df)) < 3).all(axis=1)]
     print('Samples: ' + str(df.shape[0]) + ' Group0 ' + str(df['Group'].value_counts()[0])  + ' Group1 ' + str(df['Group'].value_counts()[1]))
