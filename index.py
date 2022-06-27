@@ -342,32 +342,37 @@ def update_density_graphs(dataset, plot_type, option_dist, f0, fs0):
         df_with_sample = df_with_sample[chosen]
         x = df_with_sample[df_with_sample['Group'] == 0]
         y = df_with_sample[df_with_sample['Group'] == 1]
-        z = df_with_sample[df_with_sample['Group'] == 2]
-        group_labels = ['Group 0', 'Group 1']
+        samp = df_with_sample[df_with_sample['Group'] == 2]
+        z = df_with_sample[df_with_sample['Group'] == 3]
+        group_labels = ['Group 0', 'Group 1', 'Group 3']
 
         t_test, p_value = stats.ttest_ind(x[feat].to_numpy(), y[feat].to_numpy(), equal_var=False)
 
-        hist_data = [x[feat], y[feat]]
+        hist_data = [x[feat], y[feat], z[feat]]
         #print('z[', feat ,']:', z[feat].iloc[0])
         show_l = True
         if plot_type == 'Density': fig_tmp = make_density_plot(hist_data, group_labels, show_l)
         elif plot_type == 'Histogram': fig_tmp = make_histogram(hist_data, show_l)
         elif plot_type == 'perct Hist': fig_tmp = make_perct_histogram(dff[chosen], show_l, sep = dff[feat].mean())
-        #fig = go.Figure(data=[fig_tmp['data'][0], fig_tmp['data'][1]])
+        #density plot lines
         fig.add_trace(fig_tmp['data'][0], row=1, col=1
             )
         fig.add_trace(fig_tmp['data'][1], row=1, col=1
         )
+        if len(fig_tmp['data']) > 2:
+            fig.add_trace(fig_tmp['data'][2], row=1, col=1
+            )
         if show_rugs:
             df_with_sample['rug 1'] = 1.1
             df_with_sample['rug 2'] = 1
+            df_with_sample['rug 3'] = 0.9
             if option_dist == 'rug':
-                fig.add_trace(go.Scatter(name = 'Group 0', x=hist_data[0], y = df_with_sample['rug 1'],
+                fig.add_trace(go.Scatter(name = group_labels[0], x=hist_data[0], y = df_with_sample['rug 1'],
                                     mode = 'markers',
                                     showlegend=False,
                                     marker=dict(color = colors[0], symbol='line-ns-open')
                                         ), row=2, col=1)
-                fig.add_trace(go.Scatter(name = 'Group 1', x=hist_data[1], y = df_with_sample['rug 2'],
+                fig.add_trace(go.Scatter(name =group_labels[1], x=hist_data[1], y = df_with_sample['rug 2'],
                                     mode = 'markers',
                                     showlegend=False,
                                     marker=dict(color = colors[1], symbol='line-ns-open')
@@ -389,7 +394,7 @@ def update_density_graphs(dataset, plot_type, option_dist, f0, fs0):
         fig.update_yaxes(showticklabels=False, showgrid=False)
         fig.update_xaxes(showgrid=False)
         fig.add_vline(
-            x=z[feat].iloc[0], line_width=1.5,
+            x=samp[feat].iloc[0], line_width=1.5,
             line_color="yellow",
             row = 1, col = 1
         )
@@ -399,7 +404,7 @@ def update_density_graphs(dataset, plot_type, option_dist, f0, fs0):
             legend=dict(
                 yanchor="top", y=0.99,
                 xanchor="left", x=0.75,
-                bgcolor="rgba(0,0,0,0)",
+                bgcolor="rgba(30,30,35,0.5)",
             )
         )
         fig.update_layout(barmode='stack')
@@ -414,138 +419,6 @@ def update_density_graphs(dataset, plot_type, option_dist, f0, fs0):
         ret[feat_index%2].append(tmp_graph)
         feat_index += 1
     return ret[0], ret[1]
-
-
-# @app.callback(
-#     [Output(component_id='feature_plots', component_property='figure'),
-#     ],
-#     [Input(component_id='slct_data', component_property = 'value'),
-#      Input(component_id='type', component_property = 'value'),
-#      Input(component_id='distribution', component_property = 'value'),
-#      inp_list_inputs, inp_list_switches]
-# )
-def update_density_graphs(dataset, plot_type, option_dist, f0, fs0):
-    return None
-    dff = dataset_dict[dataset]['df']
-    option_slctd = []
-    i = 1       #only show feature graphs for true switches
-    for sw in fs0:
-        if sw: option_slctd.append(features[i])
-        i += 1
-    
-    show_rugs = True
-    if option_dist == 'None': show_rugs = False
-    rows, cols, specs = make_specs(len(option_slctd), max_cols= 2,  rugs = show_rugs,)
-    titles = make_titles(option_slctd, cols, show_rugs)
-    if show_rugs:
-        row_hgts = [0.9, 0.1]
-        row_hgts = np.tile(row_hgts, int(rows/2)).tolist()
-    else: row_hgts = np.tile(0.5, rows).tolist()
-    #print('n rows:', rows)
-    #print('n cols:', cols)
-    #print(specs)
-    #print(titles)
-    fig = make_subplots(
-        rows=rows, cols=cols,
-        specs=specs,
-        subplot_titles=titles,
-        row_heights=row_hgts,
-        vertical_spacing=0.1,
-    )
-
-    #colors = ['#37AA9C', '#00ccff', '#94F3E4']
-    row_indizes = np.repeat(np.arange(1, rows+1), cols)         # = [1,1,1,2,2,2,3,3,3]
-    col_indizes = np.tile(np.arange(1, cols+1), rows)           # = [1,2,3,1,2,3,1,2,3]
-
-    if show_rugs:                                               # = [1,1,1,2,2,2,3,3,3,4,4,4,5,5,5,6,6,6]
-        row_indizes = switch_middle(row_indizes)                # = [1,2,1,2,1,2,3,4,3,4,3,4,5,6,5,6,5,6]
-        col_indizes = np.repeat(col_indizes, 2)                 # = [1,1,2,2,3,3,1,1,2,2,3,3,1,1,2,2,3,3]
-    # print('rows:', row_indizes)
-    # print('cols:', col_indizes)
-    #make df from inputs
-    dict_ = {features[0] : [2]}
-    i = 0
-    for feat in features[1:]:
-        dict_[feat] = [f0[i]]
-        i += 1
-    df2 = pd.DataFrame(dict_)
-    df2 = pd.concat([dff, df2])
-    #print(df2.tail())
-    feat_index = 0
-    annotation_index = 0
-    for feat in option_slctd:
-        df_with_sample = df2.copy()
-        chosen = ['Group', feat]
-        df_with_sample = df_with_sample[chosen]
-        x = df_with_sample[df_with_sample['Group'] == 0]
-        y = df_with_sample[df_with_sample['Group'] == 1]
-        z = df_with_sample[df_with_sample['Group'] == 2]
-        group_labels = ['Group 0', 'Group 1']
-
-        t_test, p_value = stats.ttest_ind(x[feat].to_numpy(), y[feat].to_numpy(), equal_var=False)
-        # print(t_test)
-        # print(p_value)
-
-        hist_data = [x[feat], y[feat]]
-        #print('z[', feat ,']:', z[feat].iloc[0])
-        show_l = False
-        if feat_index == -1: show_l = True 
-        if plot_type == 'Density': fig_tmp = make_density_plot(hist_data, group_labels, show_l)
-        elif plot_type == 'Histogram': fig_tmp = make_histogram(hist_data, show_l)
-        elif plot_type == 'perct Hist': fig_tmp = make_perct_histogram(dff[chosen], show_l, sep = dff[feat].mean())
-       
-        fig.add_trace(fig_tmp['data'][0],
-                            #marker_color='blue',
-                            #showlegend=show_l,
-                row=row_indizes[feat_index], col=col_indizes[feat_index]
-            )
-        fig.add_trace(fig_tmp['data'][1],
-                        #marker_color='blue',
-                        #showlegend=show_l,
-            row=row_indizes[feat_index], col=col_indizes[feat_index]
-        )
-
-        if plot_type == 'perct Hist': fig.update_layout(barmode='stack')
-        fig.update_yaxes(showticklabels=False, showgrid=False, row=row_indizes[feat_index],col=col_indizes[feat_index])
-        #print('Annotation Index:',annotation_index)
-        fig.update_xaxes(showgrid=False, row=row_indizes[feat_index],col=col_indizes[feat_index])
-        fig.layout.annotations[annotation_index].update(text= feat + '<br>t_score = ' + '{:4f}'.format(t_test) + '<br>p_value = ' + '{:4f}'.format(p_value)[1:])
-        fig.add_vline(
-            x=z[feat].iloc[0], line_width=1.5,
-            line_color="yellow",
-            row=row_indizes[feat_index], col=col_indizes[feat_index])
-        #make rugs
-        if show_rugs == True:
-            feat_index += 1
-            # rug / margin plot to immitate ff.create_distplot
-            df_with_sample['rug 1'] = 1.1
-            df_with_sample['rug 2'] = 1
-            fig.add_trace(go.Scatter(x=hist_data[0], y = df_with_sample['rug 1'],
-                                mode = 'markers',
-                                showlegend=False,
-                                marker=dict(color = colors[0], symbol='line-ns-open')
-                                    ), row=row_indizes[feat_index], col=col_indizes[feat_index])
-
-            fig.add_trace(go.Scatter(x=hist_data[1], y = df_with_sample['rug 2'],
-                                mode = 'markers',
-                                showlegend=False,
-                                marker=dict(color = colors[1], symbol='line-ns-open')
-                                    ), row=row_indizes[feat_index], col=col_indizes[feat_index])
-            fig.update_yaxes(showgrid=False, range=[0.95,1.15], tickfont=dict(color='rgba(0,0,0,0)', size=14), row=row_indizes[feat_index],col=col_indizes[feat_index])
-            fig.update_xaxes(showgrid=False, visible=False, showticklabels=False, row=row_indizes[feat_index],col=col_indizes[feat_index])
-        feat_index += 1
-        annotation_index += 1
-
-    fig.update_layout(graph_layout)
-    height = 600
-    if show_rugs:   height = (120 + (120* rows)) + (30 + (30 * rows))
-    else:           height = (120 + (225 * rows))
-    if cols == 1: height = 600
-    #print('height:', height)
-    width = 725
-    fig.update_layout(height = height, width=width, margin=dict(l = 5, r = 0, t = 75, b = 0))
-    #print('type:', type(fig))
-    return [fig]
 
 #another callback
 @app.callback(
@@ -630,6 +503,7 @@ def update_auc_expl(dataset, slct, method):
     disable_method = False
     #dff = df.copy()
     dff = dataset_dict[dataset]['df']
+    dff = dff[dff['Group'] != 3]
     title_method = 'Sum'
     if method == 'Ratio':
         # if len(slct) > 2:
@@ -740,12 +614,15 @@ def update_auc_expl(dataset, slct, method):
 )
 def update_auc_pred(dataset, df_label, clf, split_set, slider_val, beta_slider_div, sort_by, c_button, f0):
     print('updating auc')
-    print(c_button)
     beta_div_output = []
     dataset_label = dataset_dict[dataset]['label']
     dff = dataset_dict[dataset]['df']
     df_id = eng_dfs_dict[df_label]
     cv_split = StratifiedKFold(n_splits=5)
+
+    print('df_id:', df_id)
+    print('clf:', clf)
+    print('dataset_label', dataset_label)
 
     t_test_dict = {}
     for feat in dff.columns[1:]:
@@ -843,8 +720,8 @@ def update_auc_pred(dataset, df_label, clf, split_set, slider_val, beta_slider_d
     df2 = pd.DataFrame(dict_)
     df2 = pd.concat([dff, df2])
 
-    model_clone = joblib.load(cwd + path_to_datasets + 'virus_pos_no_rep/df0/best_models/rdf.pkl')
-    eng_feat_list = hf.read_from_json(cwd + path_to_datasets + 'virus_pos_no_rep/df0/features.json')
+    model_clone = joblib.load(cwd + path_to_datasets + dataset_label + df_id + '/best_models/' + clf)
+    eng_feat_list = hf.read_from_json(cwd + path_to_datasets + dataset_label + df_id + '/features.json')
     feat_eng = hf.get_eng_values(df2.loc[df2['Group'] == 2], eng_feat_list['features'])
 
     class_index, conf = get_proba(feat_eng, model_clone, slider_val)
@@ -862,7 +739,15 @@ def update_auc_pred(dataset, df_label, clf, split_set, slider_val, beta_slider_d
 def update_dataset_data(dataset):
     dataset_label = dataset_dict[dataset]['label']
     dff = dataset_dict[dataset]['df']
-    d = {'Name': ['n_samples', 'of Group0', 'of Group1'], 'Value': [dff.shape[0], dff['Group'].value_counts()[0], dff['Group'].value_counts()[1]]}
+    name = ['n_samples']
+    value = [dff.shape[0]]
+    for i in np.arange(0, 5):
+        if dff['Group'][dff['Group'].isin([i])].empty == False:
+            name.append('Group' + str(i))
+            value.append(dff['Group'].value_counts()[i])
+    descriptions =  ['', 'died/worsened', 'improvement', 'stagnant', 'unknown', 'unknown']
+    #d = {'Name': ['n_samples', 'of Group0', 'of Group1', 'of Group3'], 'Value': [dff.shape[0], dff['Group'].value_counts()[0], dff['Group'].value_counts()[1], dff['Group'].value_counts()[3]]}
+    d = {'Description' : descriptions[:len(name)],'Name' : name, 'Value' : value}
     data_df = pd.DataFrame(data=d)
     dataset_table = dash_table.DataTable(
                 data_df.to_dict('records'), [{"name": ['Dataset', i], "id": i} for i in data_df.columns],

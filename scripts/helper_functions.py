@@ -128,7 +128,8 @@ def get_bin_data(df_orig, min_val, max_val, nbins, bin_letter = ''):
         else: n_0 = 0
         if 1 in counts: n_1 = df['Group'].value_counts()[1]
         else: n_1 = 0
-        total = df.shape[0]
+        #total = df.shape[0]
+        total = n_0 + n_1
         total_ = total
         if total == 0: total_ = 1
 

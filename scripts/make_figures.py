@@ -187,13 +187,18 @@ def make_density_plot(hist_data, group_labels, show_l, show_hist = False):
                             #bin_size= 8.9,
                             colors = colors)
     fig = go.Figure(data=[go.Scatter(fig_tmp['data'][0],
-                            #marker_color='blue'
-                            #showlegend=show_l,
                             ),
                         go.Scatter(fig_tmp['data'][1],
-                            #marker_color='blue'
-                            #showlegend=show_l,
-                            )])
+                            )
+                        ])
+    if len(hist_data) > 2:
+        fig = go.Figure(data=[go.Scatter(fig_tmp['data'][0],
+                                ),
+                            go.Scatter(fig_tmp['data'][1],
+                                ),
+                            go.Scatter(fig_tmp['data'][2], visible = 'legendonly',
+                                )
+                            ])
     fig.update_layout(
         xaxis_title="",
         yaxis_title="Density",
@@ -233,8 +238,8 @@ def make_perct_histogram(df, show_l, sep = None):
     return fig
 
 def make_histogram(hist_data, show_l, nbins=10):
-    fig= go.Figure(data=[go.Histogram(name="Group 0",x=hist_data[0], nbinsx= nbins, showlegend=show_l, marker_color=colors[0],),
-                        go.Histogram(name="Group 1",x=hist_data[1], nbinsx= nbins, showlegend=show_l, marker_color=colors[1],)])
+    fig= go.Figure(data=[go.Histogram(name="Group 0", x=hist_data[0], nbinsx= nbins, showlegend=show_l, marker_color=colors[0],),
+                        go.Histogram(name="Group 1", x=hist_data[1], nbinsx= nbins, showlegend=show_l, marker_color=colors[1],)])
     fig.update_layout(
         xaxis_title="",
         yaxis_title="Number of samples",
