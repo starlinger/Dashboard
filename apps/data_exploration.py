@@ -197,13 +197,26 @@ feat_figure_card = dbc.Card([
         dcc.RadioItems(
                 id='distribution',
                 options=['box', 'violin', 'rug', 'None'],
-                value='rug', inline=True,
+                value='None', inline=True,
             ),
-        dcc.Graph(id='feature_plots', figure={})
+        dbc.Row([
+            dbc.Col([
+                html.Div(id = 'density_plots_div_left', children = [
+                    dcc.Graph(id='feature_plot0', figure={}),
+                    dcc.Graph(id='feature_plot2', figure={}),
+                ])
+            ], width = 6),
+            dbc.Col([
+                html.Div(id = 'density_plots_div_right', children = [
+                    dcc.Graph(id='feature_plot1', figure={}),
+                    dcc.Graph(id='feature_plot3', figure={}),
+                ])
+            ], width = 6)
+        ])
     ])
 ], color = colors_dict['lightbg'])
 
-d = {'Name': ['Accuracy', 'Cohen\'s', 'MCC', 'Youden', 'F1_Score', 'Meaan'], 'Treshold': [1, 2, 3, 4, 5, 6], 'Score' : [0.5, 0.5,  0.5, 0.5, 0.5, 0.5]}
+d = {'Name': ['Accuracy', 'Cohen\'s', 'MCC', 'Youden', 'F1_Score', 'Mean'], 'Treshold': [1, 2, 3, 4, 5, 6], 'Score' : [0.5, 0.5,  0.5, 0.5, 0.5, 0.5]}
 opt_df = pd.DataFrame(data=d)
 
 auc_plot_card = dbc.Card([

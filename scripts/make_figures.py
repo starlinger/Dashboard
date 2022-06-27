@@ -188,16 +188,19 @@ def make_density_plot(hist_data, group_labels, show_l, show_hist = False):
                             colors = colors)
     fig = go.Figure(data=[go.Scatter(fig_tmp['data'][0],
                             #marker_color='blue'
-                            showlegend=show_l,
+                            #showlegend=show_l,
                             ),
                         go.Scatter(fig_tmp['data'][1],
                             #marker_color='blue'
-                            showlegend=show_l,
+                            #showlegend=show_l,
                             )])
+    fig.update_layout(
+        xaxis_title="",
+        yaxis_title="Density",
+    )
     return fig
 
 def make_perct_histogram(df, show_l, sep = None):
-
     n_bins = 4
     if df.iloc[:,-1].var() < 50: n_bins = 20
     elif df.iloc[:,-1].var() < 100: n_bins = 15
@@ -220,17 +223,22 @@ def make_perct_histogram(df, show_l, sep = None):
     # for total in binned_df['total'].to_numpy():
     #     hovertext.append('Total: ' + str(total) + 'Group0' + str(0))
     fig = go.Figure(data = [
-                            go.Bar(x = ((binned_df['range_min'] + binned_df['range_max'])/2), y = binned_df['%Group1'], showlegend=show_l, marker_color=colors[1], hovertext = hovertext, text = round(binned_df['%Group1'],2 )),
-                            go.Bar(x = ((binned_df['range_min'] + binned_df['range_max'])/2), y = binned_df['%Group0'], showlegend=show_l, marker_color=colors[0], hovertext = hovertext, text = round(binned_df['%Group0'],2 )),
+                            go.Bar(name="Group 0",x = ((binned_df['range_min'] + binned_df['range_max'])/2), y = binned_df['%Group0'], showlegend=show_l, marker_color=colors[0], hovertext = hovertext, text = round(binned_df['%Group0'],2 )),
+                            go.Bar(name="Group 1", x = ((binned_df['range_min'] + binned_df['range_max'])/2), y = binned_df['%Group1'], showlegend=show_l, marker_color=colors[1], hovertext = hovertext, text = round(binned_df['%Group1'],2 )),
                             ])
-    fig.update_layout(barmode='stack')
-    # fig= go.Figure(data=[go.Box(x=y1, showlegend=False, notched=True, marker_color="#3f3f3f", name='3'),
-    #                     go.Box(x=y1, showlegend=False, notched=True, marker_color="#3f3f3f", name='3'),])
+    fig.update_layout(
+        xaxis_title="",
+        yaxis_title="Number of samples",
+    )
     return fig
 
 def make_histogram(hist_data, show_l, nbins=10):
-    fig= go.Figure(data=[go.Histogram(x=hist_data[0], nbinsx= nbins, showlegend=show_l, marker_color=colors[0],),
-                        go.Histogram(x=hist_data[1], nbinsx= nbins, showlegend=show_l, marker_color=colors[1],)])
+    fig= go.Figure(data=[go.Histogram(name="Group 0",x=hist_data[0], nbinsx= nbins, showlegend=show_l, marker_color=colors[0],),
+                        go.Histogram(name="Group 1",x=hist_data[1], nbinsx= nbins, showlegend=show_l, marker_color=colors[1],)])
+    fig.update_layout(
+        xaxis_title="",
+        yaxis_title="Number of samples",
+    )
     return fig
 
 def make_feature_importances(ft_importances, feature_names, t_test_df, sort_by):

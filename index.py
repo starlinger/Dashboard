@@ -1,5 +1,6 @@
 from pickletools import optimize
 from unittest import result
+from click import option
 from dash import Dash, dcc, html, Input, Output, dash_table
 import dash_bootstrap_components as dbc
 import dash_daq as daq
@@ -294,15 +295,137 @@ def update_inputs(dataset):
     return [ret]
 
 @app.callback(
-    [Output(component_id='feature_plots', component_property='figure'),
+    [Output(component_id='density_plots_div_left', component_property='children'),
+     Output(component_id='density_plots_div_right', component_property='children'),
     ],
     [Input(component_id='slct_data', component_property = 'value'),
      Input(component_id='type', component_property = 'value'),
      Input(component_id='distribution', component_property = 'value'),
-     #Input(component_id='slct_data', component_property = 'value'),
      inp_list_inputs, inp_list_switches]
 )
 def update_density_graphs(dataset, plot_type, option_dist, f0, fs0):
+    dff = dataset_dict[dataset]['df']
+    option_slctd = []
+    i = 1       #only show feature graphs for true switches
+    for sw in fs0:
+        if sw: option_slctd.append(features[i])
+        i += 1
+    
+    show_rugs = True
+    if option_dist == 'None': show_rugs = False
+
+    dict_ = {features[0] : [2]}
+    i = 0
+    for feat in features[1:]:
+        dict_[feat] = [f0[i]]
+        i += 1
+    df2 = pd.DataFrame(dict_)
+    df2 = pd.concat([dff, df2])
+
+    feat_index = 0
+    ret = [[], []]
+    rows = 1
+    row_heights = [1.0]
+    if show_rugs:
+        rows = 2
+        if option_dist == 'rug': row_heights = [0.9, 0.1]
+        else: row_heights = [0.7, 0.3]
+    for feat in option_slctd:
+        fig = make_subplots(
+            rows=rows, cols=1,
+            #subplot_titles=titles,
+            row_heights = row_heights,
+            vertical_spacing=0.1,
+        )
+        df_with_sample = df2.copy()
+        chosen = ['Group', feat]
+        df_with_sample = df_with_sample[chosen]
+        x = df_with_sample[df_with_sample['Group'] == 0]
+        y = df_with_sample[df_with_sample['Group'] == 1]
+        z = df_with_sample[df_with_sample['Group'] == 2]
+        group_labels = ['Group 0', 'Group 1']
+
+        t_test, p_value = stats.ttest_ind(x[feat].to_numpy(), y[feat].to_numpy(), equal_var=False)
+
+        hist_data = [x[feat], y[feat]]
+        #print('z[', feat ,']:', z[feat].iloc[0])
+        show_l = True
+        if plot_type == 'Density': fig_tmp = make_density_plot(hist_data, group_labels, show_l)
+        elif plot_type == 'Histogram': fig_tmp = make_histogram(hist_data, show_l)
+        elif plot_type == 'perct Hist': fig_tmp = make_perct_histogram(dff[chosen], show_l, sep = dff[feat].mean())
+        #fig = go.Figure(data=[fig_tmp['data'][0], fig_tmp['data'][1]])
+        fig.add_trace(fig_tmp['data'][0], row=1, col=1
+            )
+        fig.add_trace(fig_tmp['data'][1], row=1, col=1
+        )
+        if show_rugs:
+            df_with_sample['rug 1'] = 1.1
+            df_with_sample['rug 2'] = 1
+            if option_dist == 'rug':
+                fig.add_trace(go.Scatter(name = 'Group 0', x=hist_data[0], y = df_with_sample['rug 1'],
+                                    mode = 'markers',
+                                    showlegend=False,
+                                    marker=dict(color = colors[0], symbol='line-ns-open')
+                                        ), row=2, col=1)
+                fig.add_trace(go.Scatter(name = 'Group 1', x=hist_data[1], y = df_with_sample['rug 2'],
+                                    mode = 'markers',
+                                    showlegend=False,
+                                    marker=dict(color = colors[1], symbol='line-ns-open')
+                                        ), row=2, col=1)
+            elif option_dist == 'box':
+                fig.add_trace(go.Box(x=hist_data[0], marker_color = colors[0],
+                                    showlegend=False), row=2, col=1)
+                fig.add_trace(go.Box(x=hist_data[1], marker_color = colors[1],
+                                    showlegend=False), row=2, col=1)
+            elif option_dist == 'violin':
+                fig.add_trace(go.Violin(x=hist_data[0], showlegend=False, box_visible=True, line_color= colors[0],
+                               meanline_visible=True), row=2, col=1)
+                fig.add_trace(go.Violin(x=hist_data[1], box_visible=True, showlegend=False, line_color=colors[1],
+                               meanline_visible=True), row=2, col=1)
+            fig.update_yaxes(showgrid=False,
+                #range=[0.95,1.15],
+                tickfont=dict(color='rgba(0,0,0,0)', size=14), row=2,col=1)
+            fig.update_xaxes(showgrid=False, visible=False, showticklabels=False, row=2,col=1)
+        fig.update_yaxes(showticklabels=False, showgrid=False)
+        fig.update_xaxes(showgrid=False)
+        fig.add_vline(
+            x=z[feat].iloc[0], line_width=1.5,
+            line_color="yellow",
+            row = 1, col = 1
+        )
+        fig.update_layout(
+            title_text = feat + '<br>t_score = ' + '{:4f}'.format(t_test) + '<br>p_value = ' + '{:4f}'.format(p_value)[1:],
+            title_x=0.5,
+            legend=dict(
+                yanchor="top", y=0.99,
+                xanchor="left", x=0.75,
+                bgcolor="rgba(0,0,0,0)",
+            )
+        )
+        fig.update_layout(barmode='stack')
+        fig.update_layout(graph_layout)
+        height = 350 
+        width = 350
+        if show_rugs:
+            height += 46
+            if option_dist != 'rug': height += 86
+        fig.update_layout(height = height, width=width, margin=dict(l = 5, r = 0, t = 90, b = 5))
+        tmp_graph = dcc.Graph(id='feature_plot' + str(feat_index), figure=fig)
+        ret[feat_index%2].append(tmp_graph)
+        feat_index += 1
+    return ret[0], ret[1]
+
+
+# @app.callback(
+#     [Output(component_id='feature_plots', component_property='figure'),
+#     ],
+#     [Input(component_id='slct_data', component_property = 'value'),
+#      Input(component_id='type', component_property = 'value'),
+#      Input(component_id='distribution', component_property = 'value'),
+#      inp_list_inputs, inp_list_switches]
+# )
+def update_density_graphs(dataset, plot_type, option_dist, f0, fs0):
+    return None
     dff = dataset_dict[dataset]['df']
     option_slctd = []
     i = 1       #only show feature graphs for true switches

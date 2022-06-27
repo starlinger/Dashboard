@@ -70,12 +70,12 @@ colors = ['#37AA9C', '#00ccff', '#94F3E4']
 data_table_style_header={
     'backgroundColor': colors_dict['background'],
     'color': colors[0],
-    #'border': '1px solid ' + str(colors_dict['background'])
+    'border': '1px solid ' + str(colors_dict['background'])
 }
 data_table_style_data={
     'backgroundColor': colors_dict['darkgrey'],
     'color': colors[1],
-    #'border': '1px solid ' + str(colors_dict['darkgrey'])
+    'border': '1px solid ' + str(colors_dict['darkgrey'])
 }
 
 def make_titles(labels, cols, rugs):
