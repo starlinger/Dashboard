@@ -236,8 +236,8 @@ def make_histogram(hist_data, show_l, nbins=10):
 def make_feature_importances(ft_importances, feature_names, t_test_df, sort_by):
     feature_importances = pd.DataFrame(ft_importances, columns = feature_names).transpose()
     feature_importances['Mean'] = feature_importances[feature_importances.columns[1:]].sum(axis = 1)/len(feature_names)
-    print(feature_importances)
-    print(t_test_df)
+    #print(feature_importances)
+    #print(t_test_df)
     feature_importances['t_score'] = t_test_df.iloc[:, 0]
     feature_importances['p_value'] = t_test_df.iloc[:, 1]
     hover_data = {'Mean':False,
@@ -397,7 +397,8 @@ def make_roc_figure(X_train, X_test, y_train, y_test, cv_split, classifier, cl_n
 
     #y_pred = classifier.predict(X_test)
     y_pred_proba = classifier.predict_proba(X_test)
-    fpr, tpr, thresholds = metrics.roc_curve(y_test, y_pred_proba[:,1])
+    fpr, tpr, thresholds = metrics.roc_curve(y_test, y_pred_proba[:,1], drop_intermediate=True)
+
     th_index = 0
     for th in thresholds:
         # print('slider_val:', slider_val)
