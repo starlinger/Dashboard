@@ -123,6 +123,7 @@ def make_optimized_dataframe(y, y_pred_proba, thresholds, extensive, reverse = F
     return pd.DataFrame(data=d).head(n)
 
 def make_invariable_dataframe(y, y_pred_proba, dp = 3):
+    print(y_pred_proba)
     auc = round(metrics.roc_auc_score(y, y_pred_proba), dp)
     avg_precision = round(metrics.average_precision_score(y, y_pred_proba), dp)
     brier_loss = round(metrics.brier_score_loss(y, y_pred_proba), dp)
