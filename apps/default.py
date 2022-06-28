@@ -78,6 +78,12 @@ data_table_style_data={
     'border': '1px solid ' + str(colors_dict['darkgrey'])
 }
 
+default_figure = go.Figure()
+default_figure.update_layout(graph_layout)
+default_figure.update_layout(height = 300, width=300,
+        title_text='Default Figure (probably values missing)'
+        )
+
 def make_titles(labels, cols, rugs):
     if rugs:
         ret = []

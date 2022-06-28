@@ -69,6 +69,8 @@ graph_layout = {
         'font_color' : colors[0]
     }
 
+default_figure = default.default_figure
+
 data_table_style_header = default.data_table_style_header
 data_table_style_data = default.data_table_style_data
 
@@ -436,7 +438,8 @@ def update_density_graphs(dataset, plot_type, option_dist, f0, fs0):
 def update_radar_graph(dataset, logarithmic, metric, f0):
     #make radar plot
     dff = dataset_dict[dataset]['df']
-    thresholds_df = thresholds_df_dict[dataset]['df']
+    if dataset in thresholds_df_dict: thresholds_df = thresholds_df_dict[dataset]['df']
+    else: return [default_figure]
     # print(dff.head(5))
     # if logarithmic:
     #     dff = np.log(1 + dff)
