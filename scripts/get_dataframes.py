@@ -26,6 +26,7 @@ def get_pos_no_rep(path='/assets/data/2022-03-25_norep_all.csv', reduced =  Fals
     df = df.dropna(how='any')
     if reduced: df = df[(np.abs(stats.zscore(df)) < 3).all(axis=1)]
     print('Samples: ' + str(df.shape[0]) + ' Group0 ' + str(df['Group'].value_counts()[0])  + ' Group1 ' + str(df['Group'].value_counts()[1]))
+    print(df.columns)
     return df
 
 
@@ -47,6 +48,7 @@ def get_virus_negative(path='/assets/data/2022-03-25_virusneg.csv', reduced =  F
     df = df.dropna(how='any')
     if reduced: df = df[(np.abs(stats.zscore(df)) < 3).all(axis=1)]
     print('Samples: ' + str(df.shape[0]) + ' Group0 ' + str(df['Group'].value_counts()[0])  + ' Group1 ' + str(df['Group'].value_counts()[1]))
+    print(df.columns)
     return df
 
 def get_pos_rep(path='/assets/data/2022-05-30-B19_pos.csv', reduced =  False):
@@ -71,6 +73,7 @@ def get_pos_rep(path='/assets/data/2022-05-30-B19_pos.csv', reduced =  False):
     df = df.dropna(how='any')
     if reduced: df = df[(np.abs(stats.zscore(df)) < 3).all(axis=1)]
     print('Samples: ' + str(df.shape[0]) + ' Group0 ' + str(df['Group'].value_counts()[0])  + ' Group1 ' + str(df['Group'].value_counts()[1]))
+    print(df.columns)
     return df
 
 def get_no_rep_all(path='/assets/data/2022-03-25_norep_all.csv', reduced =  False):
@@ -91,4 +94,5 @@ def get_no_rep_all(path='/assets/data/2022-03-25_norep_all.csv', reduced =  Fals
     df = df.dropna(how='any')
     if reduced: df = df[(np.abs(stats.zscore(df)) < 3).all(axis=1)]
     print('Samples: ' + str(df.shape[0]) + ' Group0 ' + str(df['Group'].value_counts()[0])  + ' Group1 ' + str(df['Group'].value_counts()[1]))
+    print(df.columns)
     return df
