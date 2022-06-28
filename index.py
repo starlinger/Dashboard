@@ -494,7 +494,7 @@ def update_radar_graph(dataset, logarithmic, metric, f0):
 #another callback
 @app.callback(
     [Output(component_id='auc_graph', component_property='figure'),
-     Output(component_id='slct_auc_feat', component_property = 'value'),
+     #Output(component_id='slct_auc_feat', component_property = 'value'),
      Output(component_id='slct_auc_feat', component_property = 'disabled'),
      Output(component_id='combine_method', component_property = 'disabled'),
      Output(component_id='auc_graph_opt_div', component_property = 'children'),
@@ -599,7 +599,7 @@ def update_auc_expl(dataset, slct, method):
     )
     fig.update_xaxes(title_text='False Positive Rate', showgrid=False,showspikes=True)
     fig.update_yaxes(title_text='True Positive Rate', showgrid=False,showspikes=True)
-    return fig, slct, disable_sclt, disable_method, opt_table, inv_table
+    return fig, disable_sclt, disable_method, opt_table, inv_table
 
 #another callback
 @app.callback(
