@@ -508,6 +508,8 @@ def update_auc_expl(dataset, slct, method):
     disable_sclt = False
     disable_method = False
     #dff = df.copy()
+
+    print(slct)
     dff = dataset_dict[dataset]['df']
     dff = dff[dff['Group'] != 3]
     title_method = 'Sum'
