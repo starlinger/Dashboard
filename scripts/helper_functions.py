@@ -44,7 +44,7 @@ def get_eng_values(df, feat_list):
 #return dataframe with feat engineered columns
 def get_feat_eng_df(df, feat_list):
     df_tmp = df.copy()
-    for entry in feat_list:
+    for entry in feat_list: 
         if entry[:3] == 'Sum':
             df_tmp = add_sum_of(df_tmp, get_sums_of(entry[3:]), entry)
         elif entry[:5] == 'ratio':
@@ -52,7 +52,7 @@ def get_feat_eng_df(df, feat_list):
             df_tmp = add_ratio_of(df_tmp, f0, f1, entry)
         elif entry[:8] == 'bl_ratio':
             df_tmp = add_ratio_of(df_tmp, get_bl_ratios_of(entry[8:]), entry)
-    return df_tmp
+    return df_tmp[feat_list]
 
 
 def get_sums_of(stri):
