@@ -576,9 +576,10 @@ def update_auc_expl(dataset, slct, method):
     fig = px.area(
         x=fprs, y=tprs,
         color_discrete_sequence= colors,
-        labels=dict(
-            x='False Positive Rate', 
-            y='True Positive Rate'))
+        # labels=dict(
+        #     x='False Positive Rate', 
+        #     y='True Positive Rate')
+        )
     fig.add_shape(
         type='line', line=dict(dash='dash'),
         x0=0, x1=1, y0=0, y1=1)
@@ -589,9 +590,10 @@ def update_auc_expl(dataset, slct, method):
     fig.update_layout(
         title_text = ' Roc Curve of the ' + title_method + ' of ' + str(len(slct)) + ft_string,
         width=425, height=425,
-        showspikes=True,
         margin=dict(l = 5, r = 5, t = 40, b = 5)
     )
+    fig.update_xaxes(title_text='False Positive Rate', showgrid=False,showspikes=True)
+    fig.update_yaxes(title_text='True Positive Rate', showgrid=False,showspikes=True)
     return fig, slct, disable_sclt, disable_method, opt_table, inv_table
 
 #another callback
