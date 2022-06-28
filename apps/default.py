@@ -206,6 +206,7 @@ for folder in os.listdir( cwd + path_to_datasets):
 
 df_label_list = []
 for entry in dataset_dict:
+    print(entry)
     df_label_list.append(dataset_dict[entry]['label'])
 
 thresholds_df_dict = {}
