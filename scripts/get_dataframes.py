@@ -51,6 +51,7 @@ def get_virus_negative(path='/assets/data/2022-03-25_virusneg.csv', reduced =  F
 
 def get_pos_rep(path='/assets/data/2022-05-30-B19_pos.csv', reduced =  False):
     df = pd.read_csv(path, sep=';')
+    df.rename(columns={'EMB: CD45R0 (numeric) ':'EMB: CD45 (numeric) '}, inplace=True)
     df = df.iloc[:,np.r_[1:2, 4:5, 16:25]]    #for viruspositive
 
     #group 1 and 2 = 0, group 4 = 1
