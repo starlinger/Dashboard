@@ -1,3 +1,4 @@
+from cProfile import label
 from sklearn import metrics
 from sklearn.metrics import auc, average_precision_score
 from sklearn.metrics import RocCurveDisplay
@@ -186,17 +187,17 @@ def make_density_plot(hist_data, group_labels, show_l, show_hist = False):
                             show_hist=show_hist,
                             #bin_size= 8.9,
                             colors = colors)
-    fig = go.Figure(data=[go.Scatter(fig_tmp['data'][0],
+    fig = go.Figure(data=[go.Scatter(fig_tmp['data'][0], name = group_labels[0],
                             ),
-                        go.Scatter(fig_tmp['data'][1],
+                        go.Scatter(fig_tmp['data'][1], name = group_labels[1],
                             )
                         ])
     if len(hist_data) > 2:
-        fig = go.Figure(data=[go.Scatter(fig_tmp['data'][0],
+        fig = go.Figure(data=[go.Scatter(fig_tmp['data'][0], name = group_labels[0],
                                 ),
-                            go.Scatter(fig_tmp['data'][1],
+                            go.Scatter(fig_tmp['data'][1], name = group_labels[1],
                                 ),
-                            go.Scatter(fig_tmp['data'][2], visible = 'legendonly',
+                            go.Scatter(fig_tmp['data'][2], visible = 'legendonly', name = group_labels[1],
                                 )
                             ])
     fig.update_layout(
@@ -253,14 +254,20 @@ def make_feature_importances(ft_importances, feature_names, t_test_df, sort_by):
     #print(t_test_df)
     feature_importances['t_score'] = t_test_df.iloc[:, 0]
     feature_importances['p_value'] = t_test_df.iloc[:, 1]
-    hover_data = {'Mean':False,
-                    't_score':':.4f',
-                    'p_value': ':.4f',
-                }
+
     fi_sorted = feature_importances.sort_values(by=[sort_by])
+    hover_data = {'Mean':False,
+                't_score':':.4f',
+                'p_value': ':.4f',
+                'ft name' : fi_sorted.index.values.tolist()
+                }
+    label_list = []
+    for entry in fi_sorted.index.values.tolist():
+        if len(entry) > 30: entry = entry[:24] + '...'
+        label_list.append(entry)
     #fi_sorted.head(10)
     fig = px.bar(fi_sorted,
-        #x = 
+        x = label_list,
         y = 'Mean',
         color= fi_sorted['Mean'],
         color_continuous_scale=colors,
@@ -282,7 +289,7 @@ def make_confusion_matrix(X_test, y_test, classifier, th, beta, extensive, rever
 
     #print('tp:', tp_count)
     m = np.transpose(metrics.confusion_matrix(y_test, y_pred_th))
-    x0 = ['Negative', 'Positive']
+    x0 = ['Real<br>Negative', 'Real<br>Positive']
     y0 = ['Predicted<br>Negative', 'Predicted<br>Positive']
 
     # print('m[0][0]:', m[0][0])
@@ -431,5 +438,6 @@ def make_roc_figure(X_train, X_test, y_train, y_test, cv_split, classifier, cl_n
     fig.add_traces(
         px.scatter(x=[fpr[test_youden_index]], y =[tpr[test_youden_index]]).update_traces(marker_size=10, marker_color=colors[1], name = 'opt. Youden', showlegend =  True, visible = 'legendonly').data
     )
+
     #title = dataset_folder + ' - ' + df_name + ' - ' + classifier_name + '<br>AUC: %0.3f, Acc: %0.3f, F1-Score: %0.3f' % (test_auc, test_acc, test_f1)
     return fig, df_opt, inv_df, ft_importances, thresholds[th_index]

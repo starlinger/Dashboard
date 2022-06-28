@@ -189,16 +189,29 @@ radar_plot_card = dbc.Card([
 
 feat_figure_card = dbc.Card([
     dbc.CardBody([
-        dcc.RadioItems(
+        dbc.Row([
+            dbc.Col([
+                html.H5('Plot Type'),
+                dcc.RadioItems(
                 id='type',
                 options=['perct Hist', 'Histogram', 'Density'],
-                value='Density', inline=True
+                value='Density', #inline=False
+                labelStyle={'display': 'block'}
             ),
-        dcc.RadioItems(
+            ], width = 3),
+            dbc.Col([
+                html.H5('Subplot'),
+                dcc.RadioItems(
                 id='distribution',
                 options=['box', 'violin', 'rug', 'None'],
-                value='None', inline=True,
+                value='None', #inline=False,
+                labelStyle={'display': 'block'}
             ),
+            ], width = 3),
+            dbc.Col([
+
+            ], width = 2),
+        ]),
         dbc.Row([
             dbc.Col([
                 html.Div(id = 'density_plots_div_left', children = [

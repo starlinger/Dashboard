@@ -222,46 +222,6 @@ confusion_matrix_card = dbc.Card([
                         style={'width': "99%"}
                     ),
                     html.Br(),
-                    html.Div(id = 'table_optimized_div', children = [
-                            dash_table.DataTable(
-                            opt_df.to_dict('records'), [{"name": i, "id": i} for i in opt_df.columns],
-                            id='table_optimized',
-                            style_header= data_table_style_header,
-                            style_data = data_table_style_data
-                        )
-                    ]),
-                    html.Br(),
-                    daq.PowerButton(
-                        id = 'c_button',
-                        on = False,
-                        color = colors[0]
-                    )
-                ], width = 5),
-                dbc.Col([
-                    html.Div(id = 'table_variant_div', children = [
-                        dash_table.DataTable(
-                        var_df.to_dict('records'), [{"name": i, "id": i} for i in var_df.columns],
-                        id='table_variant',
-                        style_header= data_table_style_header,
-                        style_data = data_table_style_data
-                        )]
-                    ),
-                    html.Div(id = 'beta_slider_div', 
-                        children = [
-                        html.H5('beta value'),
-                        dcc.Slider(0, 2, 0.1,
-                        value=1,
-                            marks={
-                                0: '0',
-                                1: 'equal',
-                                2: '2',
-                            },
-                        id='beta_slider',
-                        tooltip={"placement": "bottom", "always_visible": True}
-                        ),
-                    ])
-                ], width = 4),
-                dbc.Col([
                     html.Div(id = 'table_invariant_div', children = [
                         dash_table.DataTable(
                             invar_df.to_dict('records'), [{"name": i, "id": i} for i in invar_df.columns],
@@ -270,18 +230,52 @@ confusion_matrix_card = dbc.Card([
                             style_data = data_table_style_data
                         ),
                     ]),
+                    html.Div(id = 'table_variant_div', children = [
+                        dash_table.DataTable(
+                            var_df.to_dict('records'), [{"name": i, "id": i} for i in var_df.columns],
+                            id='table_variant',
+                            style_header= data_table_style_header,
+                            style_data = data_table_style_data
+                            )]
+                        ),
+                    html.Div(id = 'beta_slider_div', 
+                        children = [
+                            html.H5('beta value'),
+                            dcc.Slider(0, 2, 0.1,
+                                value=1,
+                                marks={
+                                    0: '0',
+                                    1: 'equal',
+                                    2: '2',
+                                },
+                                id='beta_slider',
+                                tooltip={"placement": "bottom", "always_visible": True}
+                                ),
+                            ]),
+                        html.Div(id = 'table_optimized_div', children = [
+                            dash_table.DataTable(
+                            opt_df.to_dict('records'), [{"name": i, "id": i} for i in opt_df.columns],
+                            id='table_optimized',
+                            style_header= data_table_style_header,
+                            style_data = data_table_style_data
+                            )
+                        ]),
                 ], width = 3),
-        ])
-        ], width = 6),
+                dbc.Col([
+                    dcc.Graph(id='auc_plot',  figure={}),
+                ], width = 5),
+                dbc.Col([
+                    dcc.Graph(id='confusion_matrix',  figure={})
+                ], width = 4),
+            ])
+        ], width = 11),
         dbc.Col([
-            dbc.Row([
-                dcc.Graph(id='auc_plot',  figure={}),
-                ]),
-            dbc.Row([
-                dcc.Graph(id='confusion_matrix',  figure={})
-                ])
-        ], width = 5),
-        dbc.Col([
+            daq.PowerButton(
+                id = 'c_button',
+                on = False,
+                color = colors[0]
+            ),
+            html.Br(),
             html.Div([
                 dcc.Slider(0, 1, 0.001,
                 vertical = True,
@@ -303,7 +297,7 @@ confusion_matrix_card = dbc.Card([
                 verticalHeight = 900,
                 tooltip={"placement": "bottom", "always_visible": True}
             ),
-            ], style={'width': '19%','padding-left':'80%', 'padding-right':'1%'})
+            ], style={'width': '10%','padding-left':'40%', 'padding-right':'40%'})
         ], width = 1)
         ])
     ]),

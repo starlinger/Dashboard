@@ -344,12 +344,15 @@ def update_density_graphs(dataset, plot_type, option_dist, f0, fs0):
         y = df_with_sample[df_with_sample['Group'] == 1]
         samp = df_with_sample[df_with_sample['Group'] == 2]
         z = df_with_sample[df_with_sample['Group'] == 3]
-        group_labels = ['Group 0', 'Group 1', 'Group 3']
 
+        group_labels = ['Group 0', 'Group 1', 'Group 3']
+        hist_data = [x[feat], y[feat], z[feat]]
+        if len(z) == 0:
+            group_labels = ['Group 0', 'Group 1']
+            hist_data = [x[feat], y[feat]]
+        
         t_test, p_value = stats.ttest_ind(x[feat].to_numpy(), y[feat].to_numpy(), equal_var=False)
 
-        hist_data = [x[feat], y[feat], z[feat]]
-        #print('z[', feat ,']:', z[feat].iloc[0])
         show_l = True
         if plot_type == 'Density': fig_tmp = make_density_plot(hist_data, group_labels, show_l)
         elif plot_type == 'Histogram': fig_tmp = make_histogram(hist_data, show_l)
@@ -586,6 +589,7 @@ def update_auc_expl(dataset, slct, method):
     fig.update_layout(
         title_text = ' Roc Curve of the ' + title_method + ' of ' + str(len(slct)) + ft_string,
         width=425, height=425,
+        showspikes=True,
         margin=dict(l = 5, r = 5, t = 40, b = 5)
     )
     return fig, slct, disable_sclt, disable_method, opt_table, inv_table
@@ -624,10 +628,15 @@ def update_auc_pred(dataset, df_label, clf, split_set, slider_val, beta_slider_d
     print('clf:', clf)
     print('dataset_label', dataset_label)
 
+    print(dff.columns)
+    eng_feat_list = hf.read_from_json(cwd + path_to_datasets + dataset_label + df_id + '/features.json')
+    feat_eng_df = hf.get_feat_eng_df(dff, eng_feat_list['features'])
+    print(feat_eng_df.columns)
+
     t_test_dict = {}
-    for feat in dff.columns[1:]:
-        x = dff[dff['Group'] == 0]
-        y = dff[dff['Group'] == 1]
+    for feat in feat_eng_df.columns[1:]:
+        x = feat_eng_df[feat_eng_df['Group'] == 0]
+        y = feat_eng_df[feat_eng_df['Group'] == 1]
         t_test, p_value = stats.ttest_ind(x[feat].to_numpy(), y[feat].to_numpy(), equal_var=False)
         t_test_dict[feat] = [t_test, p_value]
     t_test_df = pd.DataFrame.from_dict(t_test_dict).T
@@ -635,9 +644,9 @@ def update_auc_pred(dataset, df_label, clf, split_set, slider_val, beta_slider_d
 
     #if beta_slider == 2: beta_slider = 1024
 
-    X = dff.iloc[:,1:].to_numpy()
+    X = feat_eng_df.iloc[:,1:].to_numpy()
     X = preprocessing.scale(X)
-    y = dff.iloc[:,0].to_numpy()
+    y = feat_eng_df.iloc[:,0].to_numpy()
     y.astype(int)
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1, stratify = y)
@@ -651,12 +660,14 @@ def update_auc_pred(dataset, df_label, clf, split_set, slider_val, beta_slider_d
         y=0.1,
         xanchor="right",
         x=0.99
-    ))
-    fig.update_layout(height = 600, width=600,
-        title_text= 'CV and Testset ROC Curves - ' + clf + ' - ' + dataset
+        ),
     )
-    fig.update_xaxes(title_text='False Positive Rate', showgrid=False,)
-    fig.update_yaxes(title_text='True Positive Rate', showgrid=False,)
+    fig.update_layout(height = 600, width=600,
+        title_text= 'CV and Testset ROC Curves - ' + clf + ' - ' + dataset,
+        margin=dict(l = 10, r = 10, t = 40, b = 5)
+    )
+    fig.update_xaxes(title_text='False Positive Rate', showgrid=False,showspikes=True)
+    fig.update_yaxes(title_text='True Positive Rate', showgrid=False,showspikes=True)
 
     opt_table = dash_table.DataTable(
                     df_opt.to_dict('records'), [{"name": ['optimized data', i], "id": i} for i in df_opt.columns],
@@ -682,11 +693,6 @@ def update_auc_pred(dataset, df_label, clf, split_set, slider_val, beta_slider_d
     fig2.update_layout(graph_layout)
     #fig2.for_each_trace(lambda t: t.update(textfont_color=colors[1], textfont_size=36))
     fig2.update_layout(
-            # font=Font(
-            #         family="Gill Sans MT",
-            #         size = 20
-            #         ),
-        #title_text= 'Confusion Matrix <br>FPR: %0.3f<br>TPR: %0.3f' % (fpr, tpr),
         title_text= 'Confusion Matrix',
         margin=dict(l = 5, r = 5, t = 40, b = 5)
     )
@@ -706,12 +712,15 @@ def update_auc_pred(dataset, df_label, clf, split_set, slider_val, beta_slider_d
                     merge_duplicate_headers=True,
                     )
 
-    fig3 = make_feature_importances(ft_imp, dff.columns[1:], t_test_df, sort_by)
+    fig3 = make_feature_importances(ft_imp, feat_eng_df.columns[1:], t_test_df, sort_by)
     fig3.update_layout(graph_layout)
     fig3.update_layout(height = 350, width=600,
                     title_text= 'Feature Importance',
+                    xaxis_title = '',
+                    yaxis_title = 'Feature Imp. (mean)',
                     margin=dict(l = 5, r = 5, t = 40, b = 5))
 
+    #features = feat_eng_df.columns
     dict_ = {features[0] : [2]}
     i = 0
     for feat in features[1:]:
@@ -720,11 +729,10 @@ def update_auc_pred(dataset, df_label, clf, split_set, slider_val, beta_slider_d
     df2 = pd.DataFrame(dict_)
     df2 = pd.concat([dff, df2])
 
-    model_clone = joblib.load(cwd + path_to_datasets + dataset_label + df_id + '/best_models/' + clf)
-    eng_feat_list = hf.read_from_json(cwd + path_to_datasets + dataset_label + df_id + '/features.json')
-    feat_eng = hf.get_eng_values(df2.loc[df2['Group'] == 2], eng_feat_list['features'])
+    #model_clone = joblib.load(cwd + path_to_datasets + dataset_label + df_id + '/best_models/' + clf)
+    feat_eng = hf.get_eng_values(df2.loc[df2['Group'] == 2], eng_feat_list['features']) #group = 2 is where our input patient is saved
 
-    class_index, conf = get_proba(feat_eng, model_clone, slider_val)
+    class_index, conf = get_proba(feat_eng, classifier, slider_val)
     output = 'Model predicts Group ' + str(class_index) + ' with a %0.3f' %conf + ' certainty.'
 
     return fig, output, fig2, fig3, var_table, opt_table, inv_table, beta_div_output
