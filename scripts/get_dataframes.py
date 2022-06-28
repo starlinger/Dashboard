@@ -54,7 +54,7 @@ def get_pos_rep(path='/assets/data/2022-05-30-B19_pos.csv', reduced =  False):
     df = df.iloc[:,np.r_[1:2, 4:5, 16:25]]    #for viruspositive
 
     #group 1 and 2 = 0, group 4 = 1
-    print(df.shape[0])
+    #print(df.shape[0])
     df.loc[df['Group'] == 1, 'Group'] = 0
     df.loc[df['Group'] == 2, 'Group'] = 0
     df.loc[df['Group'] == 4, 'Group'] = 1

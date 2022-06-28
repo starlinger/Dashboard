@@ -166,11 +166,11 @@ app = Dash(__name__, external_stylesheets = [dbc.themes.BOOTSTRAP])
 
 #get data
 dataset_dict = {}
-for folder in os.listdir( cwd + path_to_datasets):
+for folder in os.listdir(cwd + path_to_datasets):
     if folder == 'virus_pos_no_rep':
         print('Virus Positive (No Rep)')
         df = get_pos_no_rep(path = cwd + path_to_csv + '2022-03-25_norep_all.csv')
-        dataset_dict = {'Virus Positive (No Rep)' : {'label' : folder + '/', 'df' : df},}
+        dataset_dict['Virus Positive (No Rep)'] = {'label' : folder + '/', 'df' : df}
 
         print('Virus Positive (No Rep) (reduced)')
         df_reduced = get_pos_no_rep(path = cwd + path_to_csv + '2022-03-25_norep_all.csv', reduced =True)
