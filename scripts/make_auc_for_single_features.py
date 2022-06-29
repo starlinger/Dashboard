@@ -187,11 +187,11 @@ def make_df(dff, file_name):
             fpr = fpr_count/np.count_nonzero(y == 0)
             #tmp4 = metrics.balanced_accuracy_score(y, y_pred, adjusted = True)
             tmp4 = tpr - fpr
-            print('th:', th)
-            print('tpr:', tpr, '- fpr:', fpr)
-            print('youden:', tmp4)
-            if th > 40:
-                print('stop')
+            # print('th:', th)
+            # print('tpr:', tpr, '- fpr:', fpr)
+            # print('youden:', tmp4)
+            # if th > 40:
+            #     print('stop')
             if tmp4 > best_youden:
                 best_youden = tmp4
                 youden_th = th
