@@ -23,6 +23,8 @@ colors_dict = {'background' : 'rgb(25, 25, 31)',
         'lightbg' : 'rgb(30, 30, 35)'}
 
 def make_radar_plot(values, labels, markers):
+    values[0] = 1 - values[0]
+    #markers[0] = 1 - markers[0]
     fig = go.Figure()
     fig.add_trace(go.Scatterpolar(
         r=values,
@@ -123,7 +125,7 @@ def make_optimized_dataframe(y, y_pred_proba, thresholds, extensive, reverse = F
     return pd.DataFrame(data=d).head(n)
 
 def make_invariable_dataframe(y, y_pred_proba, dp = 3):
-    print(y_pred_proba)
+    #print(y_pred_proba)
     index = 0
     for i in np.arange(len(y_pred_proba)):
         if np.abs(y_pred_proba[index]) < 0.0000000000000: y_pred_proba[index] = 0 #rounding errors might occur otherwise
@@ -225,7 +227,7 @@ def make_perct_histogram(df, show_l, sep = None):
     if n_bins < 4: n_bins = 4
     # print('var:', df.iloc[:,-1].var())
     # print('n_bins:', n_bins)
-    binned_df = hf.bin_df(df, n_bins, sep=None)
+    binned_df = hf.bin_df(df, n_bins, sep=sep)
     # print(binned_df)
     # print('__')
     hovertext = []
@@ -422,6 +424,13 @@ def make_roc_figure(X_train, X_test, y_train, y_test, cv_split, classifier, cl_n
 
     #y_pred = classifier.predict(X_test)
     y_pred_proba = classifier.predict_proba(X_test)
+    index = 0
+    print('test y_pred_proba')
+    for entry in X_test:
+        for en in entry:
+            print(en)
+        print('proba:', y_pred_proba[index][1])
+        index += 1
     fpr, tpr, thresholds = metrics.roc_curve(y_test, y_pred_proba[:,1], drop_intermediate=True)
 
     th_index = 0

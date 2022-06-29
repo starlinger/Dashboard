@@ -195,6 +195,17 @@ def bin_df(df_orig, nbins, sep = None):
     #print('sep:', sep)
     return pd.DataFrame.from_dict(percentages, columns = ['range_min', 'range_max', '%Group0', '%Group1', 'absGroup0', 'absGroup1', 'total'], orient = 'index')
 
+def get_proba(values, model, threshold):
+    custom = np.array([values]).reshape(1, -1)
+    #print('predict_proba:', model.predict_proba(custom))
+    confidences = model.predict_proba(custom)[0]
+    print('confidences')
+    print(confidences)
+    #id = np.argmax(confidences)
+    id = 0
+    if confidences[1] > threshold: id = 1
+    return id, confidences[id]
+
 #functions for I/O
 #json
 def write_to_json(data, filename):

@@ -154,15 +154,6 @@ def switch_middle(indizes):
     #print(arrays)
     return np.concatenate(arrays, axis = 0)
 
-def get_proba(values, model, threshold):
-    custom = np.array([values]).reshape(1, -1)
-    #print('predict_proba:', model.predict_proba(custom))
-    confidences = model.predict_proba(custom)[0]
-    #id = np.argmax(confidences)
-    id = 0
-    if confidences[1] > threshold: id = 1
-    return id, confidences[id]
-
 def make_specs(n, type = 'xy', max_cols = 2, quad = False, rugs = False, b = 0.0):
     if quad == True:
         specs = []
@@ -303,12 +294,14 @@ def update_inputs(dataset):
     [Input(component_id='slct_data', component_property = 'value'),
      Input(component_id='type', component_property = 'value'),
      Input(component_id='distribution', component_property = 'value'),
+     Input(component_id='separator', component_property = 'value'),
      inp_list_inputs, inp_list_switches]
 )
-def update_density_graphs(dataset, plot_type, option_dist, f0, fs0):
+def update_density_graphs(dataset, plot_type, option_dist, separator, f0, fs0):
     dff = dataset_dict[dataset]['df']
     option_slctd = []
     i = 1       #only show feature graphs for true switches
+    features = dff.columns
     for sw in fs0:
         if sw: option_slctd.append(features[i])
         i += 1
@@ -358,7 +351,18 @@ def update_density_graphs(dataset, plot_type, option_dist, f0, fs0):
         show_l = True
         if plot_type == 'Density': fig_tmp = make_density_plot(hist_data, group_labels, show_l)
         elif plot_type == 'Histogram': fig_tmp = make_histogram(hist_data, show_l)
-        elif plot_type == 'perct Hist': fig_tmp = make_perct_histogram(dff[chosen], show_l, sep = dff[feat].mean())
+        elif plot_type == 'perct Hist':
+            if separator == 'None': sep = None
+            elif separator == 'Input':
+                f_index = 0
+                for ft in features:
+                    if ft == feat: break
+                    f_index += 1
+                sep = f0[f_index]
+            elif separator == 'Mean': sep = dff[feat].mean()
+            elif separator == 'Youden': sep = dff[feat].mean()
+            elif separator == 'F1_Score': sep = dff[feat].mean()
+            fig_tmp = make_perct_histogram(dff[chosen], show_l, sep =sep)
         #density plot lines
         fig.add_trace(fig_tmp['data'][0], row=1, col=1
             )
@@ -398,11 +402,17 @@ def update_density_graphs(dataset, plot_type, option_dist, f0, fs0):
             fig.update_xaxes(showgrid=False, visible=False, showticklabels=False, row=2,col=1)
         fig.update_yaxes(showticklabels=False, showgrid=False)
         fig.update_xaxes(showgrid=False)
-        fig.add_vline(
-            x=samp[feat].iloc[0], line_width=1.5,
-            line_color="yellow",
-            row = 1, col = 1
-        )
+        if separator == 'Input': line_x = samp[feat].iloc[0]
+        elif separator == 'Mean': line_x = dff[feat].mean()
+        elif separator == 'Youden': line_x = thresholds_df_dict[dataset]['df'].loc[thresholds_df_dict[dataset]['df']['Feature'] == feat]['youden_th'].item()
+        elif separator == 'F1 Score': line_x = thresholds_df_dict[dataset]['df'].loc[thresholds_df_dict[dataset]['df']['Feature'] == feat]['f1_th'].item()
+        if separator != 'None':
+            print(line_x)
+            fig.add_vline(
+                x=line_x, line_width=1.5,
+                line_color="yellow",
+                row = 1, col = 1
+            )
         fig.update_layout(
             title_text = feat + '<br>t_score = ' + '{:4f}'.format(t_test) + '<br>p_value = ' + '{:4f}'.format(p_value)[1:],
             title_x=0.5,
@@ -458,18 +468,22 @@ def update_radar_graph(dataset, logarithmic, metric, f0):
     df2 = pd.DataFrame(dict_)
     df2 = pd.concat([dff, df2])
 
-    df2.iloc[:,1] = 100 - df2.iloc[:,1]         #baseline = 100 - baseline, so it does not behave inversely
+    #df2.iloc[:,1] = 100 - df2.iloc[:,1]         #baseline = 100 - baseline, so it does not behave inversely
 
     df_scaled = pd.DataFrame(scaler.fit_transform(df2), columns=df2.columns)
 
+    # print(df_scaled.columns[1:2].item())
+    # means = {df_scaled.columns[1:2].item() : 1 - df_scaled[df_scaled.columns[1:2].item()].mean()}
     means = {}
     for feat in df_scaled.columns[1:]:
         means[feat] = df_scaled[feat].mean()
 
+    # values = [1 - df_scaled.tail(1).values.flatten().tolist()[1]]
+    # values.extend(df_scaled.tail(1).values.flatten().tolist()[2:])
     values = df_scaled.tail(1).values.flatten().tolist()[1:]
-    df_tmp = pd.DataFrame(dict(
-        r = values,
-        theta = df_scaled.columns[1:]))
+    # df_tmp = pd.DataFrame(dict(
+    #     r = values,
+    #     theta = df_scaled.columns[1:]))
     #fig2 = px.line_polar(df_tmp, r='r', theta='theta', line_close=True)
     col_tmp = df_scaled.columns[1:].tolist()
     labels = []
@@ -478,7 +492,7 @@ def update_radar_graph(dataset, logarithmic, metric, f0):
 
         #add markers
     if metric == 'mean': markers = list(means.values())
-    else : markers = thresholds_df[metric].tolist()
+    else : markers = thresholds_df['scaled_' + metric].tolist()
 
     fig = make_radar_plot(values, labels, markers)
 
@@ -524,8 +538,8 @@ def update_auc_expl(dataset, slct, method):
     elif method == 'Sum': dff = hf.add_sum_of(dff, slct, 'tmp')
     if len(slct) != 2: disable_method = True
 
-    tprs = []
-    fprs = []
+    tprs = [0]
+    fprs = [0]
     ths = []
     thresholds = np.arange(0, np.max(dff['tmp']), step = np.max(dff['tmp'])/100)
     #print('sum of:', slct)
@@ -578,9 +592,15 @@ def update_auc_expl(dataset, slct, method):
     fprs.append(1)
     ths.append(np.max(dff['tmp']))
     auc = metrics.auc(fprs, tprs)
+    hover_data = np.asarray(tprs)-np.asarray(fprs)
+    for i in np.arange(0, len(hover_data)):
+        hover_data[i] = round(hover_data[i], 3)
     fig = px.area(
         x=fprs, y=tprs,
         color_discrete_sequence= colors,
+        hover_data = {
+            'youden' : hover_data,
+            }
         # labels=dict(
         #     x='False Positive Rate', 
         #     y='True Positive Rate')
@@ -653,7 +673,7 @@ def update_auc_pred(dataset, df_label, clf, split_set, slider_val, beta_slider_d
     #if beta_slider == 2: beta_slider = 1024
 
     X = feat_eng_df.iloc[:,1:].to_numpy()
-    X = preprocessing.scale(X)
+    #X = preprocessing.scale(X)
     y = feat_eng_df.iloc[:,0].to_numpy()
     y.astype(int)
 
@@ -740,7 +760,7 @@ def update_auc_pred(dataset, df_label, clf, split_set, slider_val, beta_slider_d
     #model_clone = joblib.load(cwd + path_to_datasets + dataset_label + df_id + '/best_models/' + clf)
     feat_eng = hf.get_eng_values(df2.loc[df2['Group'] == 2], eng_feat_list['features']) #group = 2 is where our input patient is saved
 
-    class_index, conf = get_proba(feat_eng, classifier, slider_val)
+    class_index, conf = hf.get_proba(feat_eng, classifier, slider_val)
     output = 'Model predicts Group ' + str(class_index) + ' with a %0.3f' %conf + ' certainty.'
 
     return fig, output, fig2, fig3, var_table, opt_table, inv_table, beta_div_output

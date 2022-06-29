@@ -204,13 +204,17 @@ feat_figure_card = dbc.Card([
                 dcc.RadioItems(
                 id='distribution',
                 options=['box', 'violin', 'rug', 'None'],
-                value='None', #inline=False,
+                value='Mean', #inline=False,
                 labelStyle={'display': 'block'}
             ),
             ], width = 3),
             dbc.Col([
-
-            ], width = 2),
+                html.H5('Separator'),
+                dcc.Dropdown(id="separator",
+                    options = ['None', 'Input', 'Mean', 'Youden', 'F1 Score'],
+                    value = 'None',
+                style={'width': "95%"}),
+            ], width = 4),
         ]),
         dbc.Row([
             dbc.Col([
