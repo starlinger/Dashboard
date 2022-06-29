@@ -51,7 +51,8 @@ def get_feat_eng_df(df, feat_list):
             f0, f1 = get_ratios_of(entry[5:])
             df_tmp = add_ratio_of(df_tmp, f0, f1, entry)
         elif entry[:8] == 'bl_ratio':
-            df_tmp = add_ratio_of(df_tmp, get_bl_ratios_of(entry[8:]), entry)
+            f0, f1 = get_bl_ratios_of(entry[8:])
+            df_tmp = add_ratio_of(df_tmp, f0, f1, entry)
     return df_tmp[feat_list]
 
 

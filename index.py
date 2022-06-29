@@ -673,7 +673,7 @@ def update_auc_pred(dataset, df_label, clf, split_set, slider_val, beta_slider_d
     #if beta_slider == 2: beta_slider = 1024
 
     X = feat_eng_df.iloc[:,1:].to_numpy()
-    #X = preprocessing.scale(X)
+    X = preprocessing.scale(X)
     y = feat_eng_df.iloc[:,0].to_numpy()
     y.astype(int)
 

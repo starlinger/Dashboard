@@ -439,6 +439,7 @@ def make_roc_figure(X_train, X_test, y_train, y_test, cv_split, classifier, cl_n
         # print('th:', th)
         if slider_val > th: break
         th_index += 1
+    if th_index > len(thresholds) -1: th_index = len(thresholds)-1
     #print(thresholds[th_index])
     
     test_youden_index = np.argmax(tpr - fpr)
