@@ -50,6 +50,8 @@ def get_eng_values(df, feat_list):
             f0 = get_bl_ratios_of(entry[9:-1])
             f1 = df.columns[1]
             df_tmp = add_ratio_of(df_bl, f0, f1, 'tmp')
+            print('df_tmp comumns')
+            print(df_tmp.columns)
             ret.append(df_tmp['tmp'].values[0])
     return ret
     
