@@ -55,11 +55,11 @@ def get_feat_eng_df(df, feat_list):
             print('checking for ratio:', entry[9:9+5])
             if entry[9:9+3] == 'Sum':
                 print('adding:', entry[9:-2])
-                df_tmp = add_sum_of(df_tmp, get_sums_of(entry[8+3:]), entry[9:-2])
+                df_tmp = add_sum_of(df_tmp, get_sums_of(entry[8+3:]), entry[9:-1])
             elif entry[9:9+5] == 'ratio':
                 f0, f1 = get_ratios_of(entry[8+5:])
                 print('adding:', entry[9:-2])
-                df_tmp = add_ratio_of(df_tmp, f0, f1, entry[9:-2])
+                df_tmp = add_ratio_of(df_tmp, f0, f1, entry[9:-1])
             f0, f1 = get_bl_ratios_of(entry[8:])
             df_tmp = add_ratio_of(df_tmp, f0, f1, entry)
     return df_tmp[feat_list]
@@ -89,9 +89,9 @@ def get_bl_ratios_of(stri):
     #     f0, f1 = get_ratios_of(stri[5:])
     # else: ret.append(stri)
     print('ret get bl ratios of')
-    print('[', stri[1:-1])
+    print('[', stri)
     print('EF baseline (in %, numeric) ]')
-    return [stri[1.-1], 'EF baseline (in %, numeric) ']
+    return [stri, 'EF baseline (in %, numeric) ']
     
 def get_models(path = 'assets/data/datasets/virus_pos_no_rep/df0/best_models/'):
     ret = {}
