@@ -793,7 +793,7 @@ def update_dataset_data(dataset):
         if dff['Group'][dff['Group'].isin([i])].empty == False:
             name.append('Group' + str(i))
             value.append(dff['Group'].value_counts()[i])
-    descriptions =  ['', 'died/worsened', 'improvement', 'stagnant', 'unknown', 'unknown']
+    descriptions =  ['', 'died/deteriorated', 'improvement', 'stagnant', 'unknown', 'unknown']
     #d = {'Name': ['n_samples', 'of Group0', 'of Group1', 'of Group3'], 'Value': [dff.shape[0], dff['Group'].value_counts()[0], dff['Group'].value_counts()[1], dff['Group'].value_counts()[3]]}
     d = {'Description' : descriptions[:len(name)],'Name' : name, 'Value' : value}
     data_df = pd.DataFrame(data=d)
