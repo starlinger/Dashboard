@@ -390,15 +390,27 @@ def update_density_graphs(dataset, plot_type, option_dist, separator, force_n_bi
                                     showlegend=False,
                                     marker=dict(color = colors[1], symbol='line-ns-open')
                                         ), row=2, col=1)
+                if len(fig_tmp['data']) > 2:
+                    fig.add_trace(go.Scatter(name =group_labels[2], x=hist_data[2], y = df_with_sample['rug 3'],
+                                        mode = 'markers',
+                                        showlegend=False,
+                                        marker=dict(color = colors[2], symbol='line-ns-open')
+                                            ), row=2, col=1)
             elif option_dist == 'box':
                 fig.add_trace(go.Box(x=hist_data[0], marker_color = colors[0],
                                     showlegend=False), row=2, col=1)
                 fig.add_trace(go.Box(x=hist_data[1], marker_color = colors[1],
                                     showlegend=False), row=2, col=1)
+                if len(fig_tmp['data']) > 2:
+                    fig.add_trace(go.Box(x=hist_data[2], marker_color = colors[2],
+                                    showlegend=False), row=2, col=1)
             elif option_dist == 'violin':
                 fig.add_trace(go.Violin(x=hist_data[0], showlegend=False, box_visible=True, line_color= colors[0],
                                meanline_visible=True), row=2, col=1)
                 fig.add_trace(go.Violin(x=hist_data[1], box_visible=True, showlegend=False, line_color=colors[1],
+                               meanline_visible=True), row=2, col=1)
+                if len(fig_tmp['data']) > 2:
+                    fig.add_trace(go.Violin(x=hist_data[2], box_visible=True, showlegend=False, line_color=colors[2],
                                meanline_visible=True), row=2, col=1)
             fig.update_yaxes(showgrid=False,
                 #range=[0.95,1.15],
@@ -652,6 +664,7 @@ def update_auc_pred(dataset, df_label, clf, split_set, slider_val, beta_slider_d
     beta_div_output = []
     dataset_label = dataset_dict[dataset]['label']
     dff = dataset_dict[dataset]['df']
+    dff = dff[dff['Group'] != 3]
     df_id = eng_dfs_dict[df_label]
     cv_split = StratifiedKFold(n_splits=5)
 

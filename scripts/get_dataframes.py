@@ -15,7 +15,7 @@ def get_pos_no_rep(path='/assets/data/2022-03-25_norep_all.csv', reduced =  Fals
     df.loc[df['Group'] == 4, 'Group'] = 1
 
     #drop group 3 and 5
-    df = df[df['Group'] != 3]
+    #df = df[df['Group'] != 3]
     df = df[df['Group'] != 5]
 
     #nur viruspositive (Virus: 4 = B19V)
@@ -41,7 +41,7 @@ def get_virus_negative(path='/assets/data/2022-03-25_virusneg.csv', reduced =  F
     df.loc[df['Group'] == 4, 'Group'] = 1
 
     #drop group 3 and 5
-    df = df[df['Group'] != 3]
+    #df = df[df['Group'] != 3]
     df = df[df['Group'] != 5]
     
     #deletes nans
@@ -63,7 +63,7 @@ def get_pos_rep(path='/assets/data/2022-05-30-B19_pos.csv', reduced =  False):
     df.loc[df['Group'] == 4, 'Group'] = 1
 
     #drop group 3 and 5
-    df = df[df['Group'] != 3]
+    #df = df[df['Group'] != 3]
     df = df[df['Group'] != 5]
 
     #nur replikation (Virus: 4 = B19V)
@@ -88,7 +88,7 @@ def get_no_rep_all(path='/assets/data/2022-03-25_norep_all.csv', reduced =  Fals
     df.loc[df['Group'] == 4, 'Group'] = 1
 
     #drop group 3 and 5
-    df = df[df['Group'] != 3]
+    #df = df[df['Group'] != 3]
     df = df[df['Group'] != 5]
 
     df = df.dropna(how='any')

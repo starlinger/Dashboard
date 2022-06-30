@@ -207,7 +207,7 @@ def make_density_plot(hist_data, group_labels, show_l, show_hist = False):
                                 ),
                             go.Scatter(fig_tmp['data'][1], name = group_labels[1],
                                 ),
-                            go.Scatter(fig_tmp['data'][2], visible = 'legendonly', name = group_labels[1],
+                            go.Scatter(fig_tmp['data'][2], visible = 'legendonly', name = group_labels[2],
                                 )
                             ])
     fig.update_layout(
