@@ -427,12 +427,12 @@ def make_roc_figure(X_train, X_test, y_train, y_test, cv_split, classifier, cl_n
     #y_pred = classifier.predict(X_test)
     y_pred_proba = classifier.predict_proba(X_test)
     index = 0
-    #print('test y_pred_proba')
-    for entry in X_test:
-        for en in entry:
-            print(en)
-        #print('proba:', y_pred_proba[index][1])
-        index += 1
+    # print('test y_pred_proba')
+    # for entry in X_test:
+    #     for en in entry:
+    #         print(en)
+    #     print('proba:', y_pred_proba[index][1])
+    #     index += 1
     fpr, tpr, thresholds = metrics.roc_curve(y_test, y_pred_proba[:,1], drop_intermediate=True)
 
     th_index = 0
