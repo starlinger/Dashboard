@@ -55,6 +55,8 @@ def get_feat_eng_df(df, feat_list):
             print('checking for ratio:', entry[9:9+5])
             if entry[9:9+3] == 'Sum':
                 print('adding:', entry[9:-2])
+                tmp_list = get_sums_of(entry[8+3:])
+                print(tmp_list)
                 df_tmp = add_sum_of(df_tmp, get_sums_of(entry[8+3:]), entry[9:-1])
             elif entry[9:9+5] == 'ratio':
                 f0, f1 = get_ratios_of(entry[8+5:])
