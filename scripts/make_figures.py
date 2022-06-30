@@ -274,10 +274,12 @@ def make_feature_importances(ft_importances, feature_names, t_test_df, sort_by):
                 'ft name' : fi_sorted.index.values.tolist()
                 }
     label_list = []
+    id = 0
     for entry in fi_sorted.index.values.tolist():
+        entry = str(id) + entry
         if len(entry) > 30: entry = entry[:24] + '...'
-        if entry in label_list: entry += '.'
         label_list.append(entry)
+        id += 1
     #fi_sorted.head(10)
     fig = px.bar(fi_sorted,
         x = label_list,
