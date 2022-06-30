@@ -37,9 +37,18 @@ def get_eng_values(df, feat_list):
             df_tmp = add_ratio_of(df, f0, f1, 'tmp')
             ret.append(df_tmp['tmp'].values[0])
         elif entry[:8] == 'bl_ratio':
+            if entry[9:9+3] == 'Sum':
+                print('adding:', entry[9:-1])
+                tmp_list = get_sums_of(entry[9+3:])
+                print(tmp_list)
+                df_tmp = add_sum_of(df_tmp, get_sums_of(entry[9+3:]), entry[9:-1])
+            elif entry[9:9+5] == 'ratio':
+                f0, f1 = get_ratios_of(entry[9+5:])
+                print('adding:', entry[9:-1])
+                df_tmp = add_ratio_of(df_tmp, f0, f1, entry[9:-1])
             f0 = get_bl_ratios_of(entry[9:-1])
             f1 = df.columns[1]
-            df_tmp = add_ratio_of(df, f0, f1, 'tmp')
+            df_tmp = add_ratio_of(df_tmp, f0, f1, 'tmp')
             ret.append(df_tmp['tmp'].values[0])
     return ret
     
