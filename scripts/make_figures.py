@@ -127,7 +127,7 @@ def make_optimized_dataframe(y, y_pred_proba, thresholds, extensive, reverse = F
 def make_invariable_dataframe(y, y_pred_proba, dp = 3):
     #print(y_pred_proba)
     #index = 0
-    for i in np.arange(len(y_pred_proba)):
+    for i in np.arange(0, len(y_pred_proba)):
         if y_pred_proba[i] < 0:
             print(y_pred_proba[i])
             y_pred_proba[i] = 0
