@@ -38,7 +38,7 @@ def get_eng_values(df, feat_list):
             ret.append(df_tmp['tmp'].values[0])
         elif entry[:8] == 'bl_ratio':
             f0 = get_bl_ratios_of(entry[8:])
-            f1 = df_tmp.columns[1]
+            f1 = df.columns[1]
             df_tmp = add_ratio_of(df, f0, f1, 'tmp')
             ret.append(df_tmp['tmp'].values[0])
     return ret
