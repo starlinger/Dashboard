@@ -51,6 +51,10 @@ def get_feat_eng_df(df, feat_list):
             f0, f1 = get_ratios_of(entry[5:])
             df_tmp = add_ratio_of(df_tmp, f0, f1, entry)
         elif entry[:8] == 'bl_ratio':
+            if entry[8:8+3] == 'Sum': df_tmp = add_sum_of(df_tmp, get_sums_of(entry[8+3:]), entry[8:])
+            elif entry[8:8+5] == 'ratio':
+                f0, f1 = get_ratios_of(entry[8+5:])
+                df_tmp = add_ratio_of(df_tmp, f0, f1, entry[8:])
             f0, f1 = get_bl_ratios_of(entry[8:])
             df_tmp = add_ratio_of(df_tmp, f0, f1, entry)
     return df_tmp[feat_list]
@@ -73,7 +77,16 @@ def get_ratios_of(stri):
     return ret0, ret1
 
 def get_bl_ratios_of(stri):
-    return 0
+    # ret = []
+    # if stri[:3] == 'Sum':
+    #     f0, f1 = get_sums_of(stri[3:])
+    # elif stri[:5] == 'ratio':
+    #     f0, f1 = get_ratios_of(stri[5:])
+    # else: ret.append(stri)
+    print('ret get bl ratios of')
+    print('[', stri)
+    print('EF baseline (in %, numeric) ]')
+    return [stri, 'EF baseline (in %, numeric) ']
     
 def get_models(path = 'assets/data/datasets/virus_pos_no_rep/df0/best_models/'):
     ret = {}
