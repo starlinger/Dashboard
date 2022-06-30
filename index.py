@@ -10,6 +10,7 @@ import numpy as np
 import os
 import joblib
 import copy
+import argparse
 
 from scripts.get_dataframes import get_pos_no_rep, get_virus_negative, get_no_rep_all, get_pos_rep
 from scripts.make_figures import *
@@ -820,6 +821,21 @@ def update_dataset_data(dataset):
     return [dataset_table]
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument(
+        '--port',
+        type=str,
+        help='port to be run on',
+        required = True
+    )
+
+    args = parser.parse_args()
+
+    port = 8001
+    if args.port != None: port = args.port
     app.run_server(debug=True,
-                  port=8001,
+                  port=int(port),
                   host = '127.0.0.20')
