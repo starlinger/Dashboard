@@ -295,9 +295,10 @@ def update_inputs(dataset):
      Input(component_id='type', component_property = 'value'),
      Input(component_id='distribution', component_property = 'value'),
      Input(component_id='separator', component_property = 'value'),
+     Input(component_id='force_n_bins', component_property = 'value'),
      inp_list_inputs, inp_list_switches]
 )
-def update_density_graphs(dataset, plot_type, option_dist, separator, f0, fs0):
+def update_density_graphs(dataset, plot_type, option_dist, separator, force_n_bins, f0, fs0):
     dff = dataset_dict[dataset]['df']
     option_slctd = []
     i = 1       #only show feature graphs for true switches
@@ -306,6 +307,8 @@ def update_density_graphs(dataset, plot_type, option_dist, separator, f0, fs0):
         if sw: option_slctd.append(features[i])
         i += 1
     
+    if force_n_bins == 0: force_n_bins =  None
+
     show_rugs = True
     if option_dist == 'None': show_rugs = False
 
@@ -352,17 +355,18 @@ def update_density_graphs(dataset, plot_type, option_dist, separator, f0, fs0):
         if plot_type == 'Density': fig_tmp = make_density_plot(hist_data, group_labels, show_l)
         elif plot_type == 'Histogram': fig_tmp = make_histogram(hist_data, show_l)
         elif plot_type == 'perct Hist':
-            if separator == 'None': sep = None
-            elif separator == 'Input':
-                f_index = 0
-                for ft in features:
-                    if ft == feat: break
-                    f_index += 1
-                sep = f0[f_index]
-            elif separator == 'Mean': sep = dff[feat].mean()
-            elif separator == 'Youden': sep = dff[feat].mean()
-            elif separator == 'F1_Score': sep = dff[feat].mean()
-            fig_tmp = make_perct_histogram(dff[chosen], show_l, sep =sep)
+            # if separator == 'None': sep = None
+            # elif separator == 'Input':
+            #     f_index = 0
+            #     for ft in features:
+            #         if ft == feat: break
+            #         f_index += 1
+            #     if f_index > len(f0)-1: f_index = len(f0) -1
+            #     sep = f0[f_index]
+            # elif separator == 'Mean': sep = dff[feat].mean()
+            # elif separator == 'Youden': sep = dff[feat].mean()
+            # elif separator == 'F1_Score': sep = dff[feat].mean()
+            fig_tmp = make_perct_histogram(dff[chosen], show_l, sep = None, force_n_bins = force_n_bins)
         #density plot lines
         fig.add_trace(fig_tmp['data'][0], row=1, col=1
             )
@@ -672,12 +676,18 @@ def update_auc_pred(dataset, df_label, clf, split_set, slider_val, beta_slider_d
 
     #if beta_slider == 2: beta_slider = 1024
 
+    # X = feat_eng_df.iloc[:,1:].to_numpy()
+    # X = preprocessing.scale(X)
+    # y = feat_eng_df.iloc[:,0].to_numpy()
+    # y.astype(int)
     X = feat_eng_df.iloc[:,1:].to_numpy()
-    X = preprocessing.scale(X)
     y = feat_eng_df.iloc[:,0].to_numpy()
-    y.astype(int)
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1, stratify = y)
+    scaler = MinMaxScaler()
+    X_train = scaler.fit_transform(X_train)
+    X_test = scaler.transform(X_test)
+    
     classifier = joblib.load(cwd + path_to_datasets + dataset_label + df_id + '/best_models/' + clf)
     cl_name = clf.split('.')[0]
 
@@ -759,8 +769,9 @@ def update_auc_pred(dataset, df_label, clf, split_set, slider_val, beta_slider_d
 
     #model_clone = joblib.load(cwd + path_to_datasets + dataset_label + df_id + '/best_models/' + clf)
     feat_eng = hf.get_eng_values(df2.loc[df2['Group'] == 2], eng_feat_list['features']) #group = 2 is where our input patient is saved
-
-    class_index, conf = hf.get_proba(feat_eng, classifier, slider_val)
+    print(feat_eng)
+    X_sample = scaler.transform(np.array(feat_eng).reshape(1, -1))
+    class_index, conf = hf.get_proba(X_sample, classifier, slider_val)
     output = 'Model predicts Group ' + str(class_index) + ' with a %0.3f' %conf + ' certainty.'
 
     return fig, output, fig2, fig3, var_table, opt_table, inv_table, beta_div_output

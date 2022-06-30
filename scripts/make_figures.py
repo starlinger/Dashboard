@@ -213,18 +213,20 @@ def make_density_plot(hist_data, group_labels, show_l, show_hist = False):
     )
     return fig
 
-def make_perct_histogram(df, show_l, sep = None):
+def make_perct_histogram(df, show_l, sep = None, force_n_bins = None):
     n_bins = 4
-    if df.iloc[:,-1].var() < 50: n_bins = 20
-    elif df.iloc[:,-1].var() < 100: n_bins = 15
-    elif df.iloc[:,-1].var() < 250: n_bins = 12
-    elif df.iloc[:,-1].var() < 500: n_bins = 10
-    elif df.iloc[:,-1].var() < 600: n_bins = 8
-    elif df.iloc[:,-1].var() < 700: n_bins = 6
-    elif df.iloc[:,-1].var() < 850: n_bins = 5
+    if force_n_bins == None:
+        if df.iloc[:,-1].var() < 50: n_bins = 20
+        elif df.iloc[:,-1].var() < 100: n_bins = 15
+        elif df.iloc[:,-1].var() < 250: n_bins = 12
+        elif df.iloc[:,-1].var() < 500: n_bins = 10
+        elif df.iloc[:,-1].var() < 600: n_bins = 8
+        elif df.iloc[:,-1].var() < 700: n_bins = 6
+        elif df.iloc[:,-1].var() < 850: n_bins = 5
 
-    if n_bins > 20: n_bins = 20
-    if n_bins < 4: n_bins = 4
+        if n_bins > 20: n_bins = 20
+        if n_bins < 4: n_bins = 4
+    else: n_bins = force_n_bins
     # print('var:', df.iloc[:,-1].var())
     # print('n_bins:', n_bins)
     binned_df = hf.bin_df(df, n_bins, sep=sep)

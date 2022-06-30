@@ -207,7 +207,7 @@ feat_figure_card = dbc.Card([
                 value='Mean', #inline=False,
                 labelStyle={'display': 'block'}
             ),
-            ], width = 3),
+            ], width = 2),
             dbc.Col([
                 html.H5('Separator'),
                 dcc.Dropdown(id="separator",
@@ -215,6 +215,13 @@ feat_figure_card = dbc.Card([
                     value = 'None',
                 style={'width': "95%"}),
             ], width = 4),
+            dbc.Col([
+                html.H5('n_bins'),
+                dcc.Dropdown(id="force_n_bins",
+                    options = [0, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+                    value = 0,
+                style={'width': "95%"}),
+            ], width = 2),
         ]),
         dbc.Row([
             dbc.Col([

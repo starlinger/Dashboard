@@ -126,7 +126,10 @@ def get_bin_data(df_orig, min_val, max_val, nbins, bin_letter = ''):
     bin_nr = 0
     percentages = {}
     #print(df_orig.columns[-1])
-    for i in np.arange(min_val + range_/nbins, max_val + range_/nbins, step = range_/nbins):
+    print('from:', min_val + range_/nbins)
+    print('to:', max_val + range_/nbins)
+    print('in', range_/nbins, 'steps')
+    for i in np.arange(min_val + range_/nbins, max_val-0.01 + range_/nbins, step = range_/nbins):
         df = df_orig.copy()
         #print('bin number', bin_nr)
         range_min, range_max = i_last, i
@@ -171,13 +174,7 @@ def bin_df(df_orig, nbins, sep = None):
         if sep < min_val or sep > max_val: sep = None
     # print('min:', min_val)
     # print('max:', max_val)
-
-
-    range_ = max_val - min_val
-    i_last = min_val
-    bin_nr = 0
     percentages = {}
-    bin_list = [nbins]         #later iterate through this list to make a number of dictionaries, if sep == None this will only happen once (and then for all bins)
     print(df_orig.columns[-1])
     if sep == None: percentages = get_bin_data(df_orig, min_val, max_val, nbins)
     elif sep != None:

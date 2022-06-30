@@ -9,6 +9,7 @@ import scripts.helper_functions as hf
 from scipy.__config__ import show
 from sklearn import metrics
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.model_selection import train_test_split
 
 import plotly.express as px  # (version 4.7.0 or higher)
 import plotly.figure_factory as ff
@@ -210,6 +211,20 @@ for folder in os.listdir(cwd + path_to_datasets):
         dataset_dict['Virus Positive (Rep) (reduced)'] =  {'label' : folder + '/', 'df' : df_pos_rep_reduced}
     else: print('unknown folder')
 
+scaler = MinMaxScaler()
+X = dataset_dict['Virus Positive (No Rep)']['df'].iloc[:,1:].to_numpy()
+y = dataset_dict['Virus Positive (No Rep)']['df'].iloc[:,0].to_numpy()
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1, stratify = y)
+
+print('X_train')
+print(X_test[:,0])
+
+X_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+print('scaled')
+print(X_test_scaled[:,0])
+
 df_label_list = []
 for entry in dataset_dict:
     print(entry)
@@ -227,7 +242,7 @@ for entry in dataset_dict:
             thresholds_df_dict[entry] = {'label': dataset_dict[entry]['label'], 'df' : df_th.copy()}
 
 #load models
-model_clone = joblib.load(cwd + path_to_datasets + 'virus_pos_no_rep/df0/best_models/rdf.pkl')
+model_clone = joblib.load(cwd + path_to_datasets + 'virus_pos_no_rep/df0/best_models/logreg.pkl')
 model_dict = hf.get_models(path= cwd + path_to_datasets + dataset_dict[list(dataset_dict.keys())[0]]['label'] + 'df0/best_models/')
 eng_dfs_dict = hf.get_eng_dfs(path= cwd + path_to_datasets + dataset_dict[list(dataset_dict.keys())[0]]['label'])
 
