@@ -39,13 +39,13 @@ def get_eng_values(df, feat_list):
         elif entry[:8] == 'bl_ratio':
             df_bl = df.copy()
             if entry[9:9+3] == 'Sum':
-                print('adding:', entry[9:-1])
+                #print('adding:', entry[9:-1])
                 tmp_list = get_sums_of(entry[9+3:])
-                print(tmp_list)
+                #print(tmp_list)
                 df_bl = add_sum_of(df_bl, get_sums_of(entry[9+3:]), entry[9:-1])
             elif entry[9:9+5] == 'ratio':
                 f0, f1 = get_ratios_of(entry[9+5:])
-                print('adding:', entry[9:-1])
+                #print('adding:', entry[9:-1])
                 df_bl = add_ratio_of(df_bl, f0, f1, entry[9:-1])
             f0 = get_bl_ratios_of(entry[9:-1])
             f1 = df.columns[1]
@@ -65,27 +65,27 @@ def get_feat_eng_df(df, feat_list):
             f0, f1 = get_ratios_of(entry[5:])
             df_tmp = add_ratio_of(df_tmp, f0, f1, entry)
         elif entry[:8] == 'bl_ratio':
-            print('checking for Sum:', entry[9:9+3])
-            print('checking for ratio:', entry[9:9+5])
+            # print('checking for Sum:', entry[9:9+3])
+            # print('checking for ratio:', entry[9:9+5])
             if entry[9:9+3] == 'Sum':
-                print('adding:', entry[9:-1])
+                #print('adding:', entry[9:-1])
                 tmp_list = get_sums_of(entry[9+3:])
-                print(tmp_list)
+                #print(tmp_list)
                 df_tmp = add_sum_of(df_tmp, get_sums_of(entry[9+3:]), entry[9:-1])
             elif entry[9:9+5] == 'ratio':
                 f0, f1 = get_ratios_of(entry[9+5:])
-                print('adding:', entry[9:-1])
+                #print('adding:', entry[9:-1])
                 df_tmp = add_ratio_of(df_tmp, f0, f1, entry[9:-1])
             f0 = get_bl_ratios_of(entry[9:-1])
             f1 = df_tmp.columns[1]
-            print('bl ratio of:')
-            print(f0)
-            print(f1)
+            # print('bl ratio of:')
+            # print(f0)
+            # print(f1)
             df_tmp = add_ratio_of(df_tmp, f0, f1, entry)
-    print('columns df_tmp')
-    print(df_tmp.columns)
-    print('feat_list')
-    print(feat_list)
+    # print('columns df_tmp')
+    # print(df_tmp.columns)
+    # print('feat_list')
+    # print(feat_list)
     return df_tmp[feat_list]
 
 
@@ -116,7 +116,6 @@ def get_bl_ratios_of(stri):
     # print('[', stri)
     # print('EF baseline (in %, numeric) ]')
     return stri
-    return [stri, 'EF baseline (in %, numeric) ']
     
 def get_models(path = 'assets/data/datasets/virus_pos_no_rep/df0/best_models/'):
     ret = {}

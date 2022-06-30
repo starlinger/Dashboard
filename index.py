@@ -758,7 +758,6 @@ def update_auc_pred(dataset, df_label, clf, split_set, slider_val, beta_slider_d
                     xaxis_title = '',
                     yaxis_title = 'Feature Imp. (mean)',
                     margin=dict(l = 5, r = 5, t = 40, b = 5))
-    fig.update_layout(barmode='group')
 
     #features = feat_eng_df.columns
     dict_ = {features[0] : [2]}

@@ -273,6 +273,7 @@ def make_feature_importances(ft_importances, feature_names, t_test_df, sort_by):
     label_list = []
     for entry in fi_sorted.index.values.tolist():
         if len(entry) > 30: entry = entry[:24] + '...'
+        if entry in label_list: entry += '.'
         label_list.append(entry)
     #fi_sorted.head(10)
     fig = px.bar(fi_sorted,
