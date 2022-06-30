@@ -126,9 +126,12 @@ def make_optimized_dataframe(y, y_pred_proba, thresholds, extensive, reverse = F
 
 def make_invariable_dataframe(y, y_pred_proba, dp = 3):
     #print(y_pred_proba)
-    index = 0
+    #index = 0
     for i in np.arange(len(y_pred_proba)):
-        if np.abs(y_pred_proba[index]) < 0.0000000000000: y_pred_proba[index] = 0 #rounding errors might occur otherwise
+        if y_pred_proba[i] < 0:
+            print(y_pred_proba[i])
+            y_pred_proba[i] = 0
+        #if np.abs(y_pred_proba[i]) < 0.0000000000000: y_pred_proba[i] = 0 #rounding errors might occur otherwise
 
     auc = round(metrics.roc_auc_score(y, y_pred_proba), dp)
     avg_precision = round(metrics.average_precision_score(y, y_pred_proba), dp)
