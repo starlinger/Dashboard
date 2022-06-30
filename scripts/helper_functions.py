@@ -88,9 +88,9 @@ def get_bl_ratios_of(stri):
     #     f0, f1 = get_ratios_of(stri[5:])
     # else: ret.append(stri)
     print('ret get bl ratios of')
-    print('[', stri)
+    print('[', stri[1:-1])
     print('EF baseline (in %, numeric) ]')
-    return [stri, 'EF baseline (in %, numeric) ']
+    return [stri[1.-1], 'EF baseline (in %, numeric) ']
     
 def get_models(path = 'assets/data/datasets/virus_pos_no_rep/df0/best_models/'):
     ret = {}
