@@ -663,6 +663,7 @@ def update_auc_pred(dataset, df_label, clf, split_set, slider_val, beta_slider_d
     eng_feat_list = hf.read_from_json(cwd + path_to_datasets + dataset_label + df_id + '/features.json')
     feat_eng_df = hf.get_feat_eng_df(dff, eng_feat_list['features'])
     feat_eng_df.insert(0, 'Group', dff['Group']) #add group again because it is not a feature and will be deleted by hf.get_feat_eng_df
+    print('ft eng df columns')
     print(feat_eng_df.columns)
 
     t_test_dict = {}
