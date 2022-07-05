@@ -32,7 +32,7 @@ def make_df(dff, file_name):
     print('[', end = '')
     dot_step = int(len(df_scaled.columns[1:])/64)
     f_index = 0
-    for feature in df_scaled.columns[1:2]:
+    for feature in df_scaled.columns[1:]:
         accuracys = []
         tprs = []
         fprs = []
