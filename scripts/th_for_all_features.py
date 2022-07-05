@@ -8,7 +8,7 @@ from sklearn.preprocessing import MinMaxScaler
 from get_dataframes import get_no_rep_all, get_pos_no_rep, get_pos_rep, get_virus_negative
 from helper_functions import *
 
-os.chdir('..')
+#os.chdir('..')
 cwd = os.getcwd()
 paths = read_from_json(cwd + '/paths.json')
 path_to_csv = paths['path_to_csv']
@@ -32,7 +32,7 @@ def make_df(dff, file_name):
     print('[', end = '')
     dot_step = int(len(df_scaled.columns[1:])/64)
     f_index = 0
-    for feature in df_scaled.columns[1:]:
+    for feature in df_scaled.columns[1:5]:
         accuracys = []
         tprs = []
         fprs = []
@@ -120,6 +120,7 @@ def make_df(dff, file_name):
         return_df = pd.concat([return_df, last])
         if f_index%dot_step == 0: print('.', end = '', flush=True)
         f_index += 1
+    print(']')
 
     #for original
     print('\ngetting ths for orig df')
@@ -149,7 +150,9 @@ def make_df(dff, file_name):
         best_mcc = 0
         youden_th = 0
         best_youden = 0
-        for th in np.arange(0, np.max(dff[feature]) + np.max(dff[feature])/500, step = np.max(dff[feature])/500):
+        # print('min:', np.min(dff[feature]))
+        # print('max:', np.max(dff[feature]))
+        for th in np.arange(np.min(dff[feature]), np.max(dff[feature]) + np.max(dff[feature])/500, step = (np.max(dff[feature] - np.min(dff[feature])))/500):
             #print(th)
             df_tmp = dff.copy()
             y = df_tmp['Group'].to_numpy()
@@ -200,6 +203,9 @@ def make_df(dff, file_name):
                 index += 1
             tpr = tpr_count/np.count_nonzero(y == 1)
             fpr = fpr_count/np.count_nonzero(y == 0)
+            # print('th:', th)
+            # print('tpr:', tpr)
+            # print('fpr:', fpr)
             tprs.append(tpr)
             fprs.append(fpr)
             #tmp4 = metrics.balanced_accuracy_score(y, y_pred, adjusted = True)
@@ -228,6 +234,7 @@ def make_df(dff, file_name):
         #mcc_ths.append(mcc_th)
         youden_ths.append(youden_th)
         aucs.append(roc_auc)
+    print(']')
 
     return_df['accuracy_th'] = accuracy_ths
     return_df['f1_th'] = f1_ths
