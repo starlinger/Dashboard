@@ -103,17 +103,16 @@ def make_df(dff, file_name):
             # ths.append(th)
         fpr, tpr, thresholds = metrics.roc_curve(y, y_pred_proba)
         roc_auc = metrics.auc(fpr, tpr)
-        print('metric Roc AUC:', roc_auc)
-        print('feature:', feature)
-        print('best_acc:', best_accuracy, 'at', accuracy_th)
-        print('best_f1:', best_f1, 'at', f1_th)
-        print('best_cohens:', best_cohens, 'at', cohens_th)
-        #print('best_mcc:', best_mcc, 'at', mcc_th)
-        print('best_youden:', best_youden, 'at', youden_th)
+        # print('feature:', feature)
+        # print('metric Roc AUC:', roc_auc)
+        # print('best_acc:', best_accuracy, 'at', accuracy_th)
+        # print('best_f1:', best_f1, 'at', f1_th)
+        # print('best_cohens:', best_cohens, 'at', cohens_th)
+        # #print('best_mcc:', best_mcc, 'at', mcc_th)
+        # print('best_youden:', best_youden, 'at', youden_th)
         data = {'Feature' : [feature], 'scaled_accuracy_th' : [accuracy_th], 'scaled_f1_th' : [f1_th], 'scaled_cohens_th' : [cohens_th], 'scaled_youden_th' : [youden_th], 'scaled_auc' : [roc_auc]}
         last = pd.DataFrame.from_dict(data)
         return_df = pd.concat([return_df, last])
-
 
     #for original
     accuracy_ths = []
@@ -203,8 +202,8 @@ def make_df(dff, file_name):
                 best_youden = tmp4
                 youden_th = th
         roc_auc = metrics.auc(fprs, tprs)
-        print('manual Roc AUC:', roc_auc)
         print('feature:', feature)
+        print('manual Roc AUC:', roc_auc)
         print('best_acc:', best_accuracy, 'at', accuracy_th)
         print('best_f1:', best_f1, 'at', f1_th)
         print('best_cohens:', best_cohens, 'at', cohens_th)
