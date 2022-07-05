@@ -555,10 +555,12 @@ def update_auc_expl(dataset, slct, method):
     elif method == 'Sum': dff = hf.add_sum_of(dff, slct, 'tmp')
     if len(slct) != 2: disable_method = True
 
-    tprs = [0]
-    fprs = [0]
+    # tprs = [0]
+    # fprs = [0]
+    tpr = []
+    fprs = []
     ths = []
-    thresholds = np.arange(0, np.max(dff['tmp']), step = np.max(dff['tmp'])/100)
+    thresholds = np.arange(0, np.max(dff['tmp']) + np.max(dff['tmp'])/100, step = np.max(dff['tmp'])/100)
     #print('sum of:', slct)
     opt_df = make_optimized_dataframe(dff.iloc[:,0].to_numpy(), dff.iloc[:,-1].to_numpy(), thresholds, False, reverse=True)
     opt_table = dash_table.DataTable(
@@ -605,8 +607,8 @@ def update_auc_expl(dataset, slct, method):
         fprs.append(fpr)
         ths.append(th)
     # Plotly Express
-    tprs.append(1)
-    fprs.append(1)
+    # tprs.append(1)
+    # fprs.append(1)
     ths.append(np.max(dff['tmp']))
     auc = metrics.auc(fprs, tprs)
     hover_data = np.asarray(tprs)-np.asarray(fprs)

@@ -149,7 +149,7 @@ def make_df(dff, file_name):
         best_mcc = 0
         youden_th = 0
         best_youden = 0
-        for th in np.arange(0, np.max(dff[feature]) + 0.01, step = np.max(dff[feature])/500):
+        for th in np.arange(0, np.max(dff[feature]) + np.max(dff[feature])/500, step = np.max(dff[feature])/500):
             #print(th)
             df_tmp = dff.copy()
             y = df_tmp['Group'].to_numpy()
@@ -215,13 +215,13 @@ def make_df(dff, file_name):
         if f_index%dot_step == 0: print('.', end = '', flush=True)
         f_index += 1
         roc_auc = metrics.auc(fprs, tprs)
-        print('feature:', feature)
-        print('manual Roc AUC:', roc_auc)
-        print('best_acc:', best_accuracy, 'at', accuracy_th)
-        print('best_f1:', best_f1, 'at', f1_th)
-        print('best_cohens:', best_cohens, 'at', cohens_th)
-        #print('best_mcc:', best_mcc, 'at', mcc_th)
-        print('best_youden:', best_youden, 'at', youden_th)
+        # print('feature:', feature)
+        # print('manual Roc AUC:', roc_auc)
+        # print('best_acc:', best_accuracy, 'at', accuracy_th)
+        # print('best_f1:', best_f1, 'at', f1_th)
+        # print('best_cohens:', best_cohens, 'at', cohens_th)
+        # #print('best_mcc:', best_mcc, 'at', mcc_th)
+        # print('best_youden:', best_youden, 'at', youden_th)
         accuracy_ths.append(accuracy_th)
         f1_ths.append(f1_th)
         cohens_ths.append(cohens_th)
@@ -235,7 +235,7 @@ def make_df(dff, file_name):
     #return_df['mcc_th'] = mcc_ths
     return_df['youden_th'] = youden_ths
     return_df['roc_auc'] = aucs
-    return_df.to_csv(file_name, index=False)
+    return_df.to_csv(file_name, sep = ';', index=False)
 
 
 #virus_negative
