@@ -77,10 +77,10 @@ def make_df(dff, file_name):
                 best_cohens = tmp2
                 cohens_th = th
             #mcc
-            tmp3 = metrics.matthews_corrcoef(y, y_pred)
-            if tmp3 > best_mcc:
-                best_mcc = tmp3
-                mcc_th = th
+            # tmp3 = metrics.matthews_corrcoef(y, y_pred)
+            # if tmp3 > best_mcc:
+            #     best_mcc = tmp3
+            #     mcc_th = th
             #youden
             # index = 0
             # tpr_count = 0
@@ -105,9 +105,9 @@ def make_df(dff, file_name):
         print('best_acc:', best_accuracy, 'at', accuracy_th)
         print('best_f1:', best_f1, 'at', f1_th)
         print('best_cohens:', best_cohens, 'at', cohens_th)
-        print('best_mcc:', best_mcc, 'at', mcc_th)
+        #print('best_mcc:', best_mcc, 'at', mcc_th)
         print('best_youden:', best_youden, 'at', youden_th)
-        data = {'Feature' : [feature], 'scaled_accuracy_th' : [accuracy_th], 'scaled_f1_th' : [f1_th], 'scaled_cohens_th' : [cohens_th], 'scaled_mcc_th' : [mcc_th], 'scaled_youden_th' : [youden_th]}
+        data = {'Feature' : [feature], 'scaled_accuracy_th' : [accuracy_th], 'scaled_f1_th' : [f1_th], 'scaled_cohens_th' : [cohens_th], 'scaled_youden_th' : [youden_th]}
         last = pd.DataFrame.from_dict(data)
         return_df = pd.concat([return_df, last])
 
@@ -172,10 +172,10 @@ def make_df(dff, file_name):
                 best_cohens = tmp2
                 cohens_th = th
             #mcc
-            tmp3 = metrics.matthews_corrcoef(y, y_pred)
-            if tmp3 > best_mcc:
-                best_mcc = tmp3
-                mcc_th = th
+            # tmp3 = metrics.matthews_corrcoef(y, y_pred)
+            # if tmp3 > best_mcc:
+            #     best_mcc = tmp3
+            #     mcc_th = th
             #youden
             index = 0
             tpr_count = 0
@@ -205,17 +205,17 @@ def make_df(dff, file_name):
         print('best_acc:', best_accuracy, 'at', accuracy_th)
         print('best_f1:', best_f1, 'at', f1_th)
         print('best_cohens:', best_cohens, 'at', cohens_th)
-        print('best_mcc:', best_mcc, 'at', mcc_th)
+        #print('best_mcc:', best_mcc, 'at', mcc_th)
         print('best_youden:', best_youden, 'at', youden_th)
         accuracy_ths.append(accuracy_th)
         f1_ths.append(f1_th)
         cohens_ths.append(cohens_th)
-        mcc_ths.append(mcc_th)
+        #mcc_ths.append(mcc_th)
         youden_ths.append(youden_th)
     return_df['accuracy_th'] = accuracy_ths
     return_df['f1_th'] = f1_ths
     return_df['cohens_th'] = cohens_ths
-    return_df['mcc_th'] = mcc_ths
+    #return_df['mcc_th'] = mcc_ths
     return_df['youden_th'] = youden_ths
     return_df.to_csv(file_name, index=False)
 
