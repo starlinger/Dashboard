@@ -560,7 +560,10 @@ def update_auc_expl(dataset, slct, method):
     tprs = []
     fprs = []
     ths = []
-    thresholds = np.arange(np.min(dff['tmp']), np.max(dff['tmp']) + np.max(dff['tmp'])/100, step = np.max(dff['tmp'])/100)
+    from_ = np.min(dff['tmp'])
+    step_ = (np.max(dff['tmp'] - np.min(dff['tmp'])))/100
+    till_ = np.max(dff['tmp']) + step_ + (step_ * 0.1)
+    thresholds = np.arange(from_, till_, step = step_)
     #print('sum of:', slct)
     opt_df = make_optimized_dataframe(dff.iloc[:,0].to_numpy(), dff.iloc[:,-1].to_numpy(), thresholds, False, reverse=True)
     opt_table = dash_table.DataTable(
