@@ -27,6 +27,7 @@ def make_df(dff, file_name):
     #df_scaled.insert(0, 'Group', dff['Group'])
     #print(df_scaled['Group'])
 
+    print('getting ths for scaled df')
     for feature in df_scaled.columns[1:]:
         accuracys = []
         tprs = []
@@ -44,6 +45,10 @@ def make_df(dff, file_name):
         best_mcc = 0
         youden_th = 0
         best_youden = 0
+        print('[................................................................]')
+        print('[', end = '')
+        dot_step = int(len(dff.columns[1:])/64)
+        f_index = 0
         for th in np.arange(0, np.max(df_scaled[feature]) + 0.01, step = np.max(df_scaled[feature])/100):
             #print(th)
             df_tmp = df_scaled.copy()
@@ -96,6 +101,8 @@ def make_df(dff, file_name):
             if tmp4 > best_youden:
                 best_youden = tmp4
                 youden_th = th
+            if f_index%dot_step == 0: print('.', end = '', flush=True)
+            f_index += 1
             # #roc_auc = metrics.auc(fpr, tpr)
             # #aucs.append(roc_auc)
             # tprs.append(tpr)
@@ -115,12 +122,17 @@ def make_df(dff, file_name):
         return_df = pd.concat([return_df, last])
 
     #for original
+    print('getting ths for orig df')
     accuracy_ths = []
     f1_ths = []
     cohens_ths = []
     mcc_ths = []
     youden_ths = []
     aucs = []
+    print('[................................................................]')
+    print('[', end = '')
+    dot_step = int(len(dff.columns[1:])/64)
+    f_index = 0
     for feature in dff.columns[1:]:
         accuracys = []
         tprs = []
@@ -201,6 +213,8 @@ def make_df(dff, file_name):
             if tmp4 > best_youden:
                 best_youden = tmp4
                 youden_th = th
+            if f_index%dot_step == 0: print('.', end = '', flush=True)
+            f_index += 1
         roc_auc = metrics.auc(fprs, tprs)
         print('feature:', feature)
         print('manual Roc AUC:', roc_auc)
