@@ -122,7 +122,7 @@ def make_df(dff, file_name):
         f_index += 1
 
     #for original
-    print('getting ths for orig df')
+    print('\ngetting ths for orig df')
     accuracy_ths = []
     f1_ths = []
     cohens_ths = []
@@ -201,7 +201,7 @@ def make_df(dff, file_name):
                 index += 1
             tpr = tpr_count/np.count_nonzero(y == 1)
             fpr = fpr_count/np.count_nonzero(y == 0)
-            tprs.append(tprs)
+            tprs.append(tpr)
             fprs.append(fpr)
             #tmp4 = metrics.balanced_accuracy_score(y, y_pred, adjusted = True)
             tmp4 = tpr - fpr
