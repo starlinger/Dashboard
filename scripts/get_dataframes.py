@@ -42,6 +42,7 @@ def get_virus_negative(path='/assets/data/2022-03-25_virusneg.csv', reduced =  F
 
     #drop group 3 and 5
     #df = df[df['Group'] != 3]
+    df.loc[df['Group'] == 3, 'Group'] = 1
     df = df[df['Group'] != 5]
     
     #deletes nans
