@@ -28,6 +28,10 @@ def make_df(dff, file_name):
     #print(df_scaled['Group'])
 
     print('getting ths for scaled df')
+    print('[................................................................]')
+    print('[', end = '')
+    dot_step = int(len(df_scaled.columns[1:])/64)
+    f_index = 0
     for feature in df_scaled.columns[1:]:
         accuracys = []
         tprs = []
@@ -45,10 +49,6 @@ def make_df(dff, file_name):
         best_mcc = 0
         youden_th = 0
         best_youden = 0
-        print('[................................................................]')
-        print('[', end = '')
-        dot_step = int(len(dff.columns[1:])/64)
-        f_index = 0
         for th in np.arange(0, np.max(df_scaled[feature]) + 0.01, step = np.max(df_scaled[feature])/100):
             #print(th)
             df_tmp = df_scaled.copy()
@@ -101,8 +101,6 @@ def make_df(dff, file_name):
             if tmp4 > best_youden:
                 best_youden = tmp4
                 youden_th = th
-            if f_index%dot_step == 0: print('.', end = '', flush=True)
-            f_index += 1
             # #roc_auc = metrics.auc(fpr, tpr)
             # #aucs.append(roc_auc)
             # tprs.append(tpr)
@@ -120,6 +118,8 @@ def make_df(dff, file_name):
         data = {'Feature' : [feature], 'scaled_accuracy_th' : [accuracy_th], 'scaled_f1_th' : [f1_th], 'scaled_cohens_th' : [cohens_th], 'scaled_youden_th' : [youden_th], 'scaled_auc' : [roc_auc]}
         last = pd.DataFrame.from_dict(data)
         return_df = pd.concat([return_df, last])
+        if f_index%dot_step == 0: print('.', end = '', flush=True)
+        f_index += 1
 
     #for original
     print('getting ths for orig df')
@@ -213,8 +213,8 @@ def make_df(dff, file_name):
             if tmp4 > best_youden:
                 best_youden = tmp4
                 youden_th = th
-            if f_index%dot_step == 0: print('.', end = '', flush=True)
-            f_index += 1
+        if f_index%dot_step == 0: print('.', end = '', flush=True)
+        f_index += 1
         roc_auc = metrics.auc(fprs, tprs)
         print('feature:', feature)
         print('manual Roc AUC:', roc_auc)
