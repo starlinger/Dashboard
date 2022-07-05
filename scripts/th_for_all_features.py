@@ -102,6 +102,9 @@ def make_df(dff, file_name):
             # tprs.append(tpr)
             # fprs.append(fpr)
             # ths.append(th)
+        fpr, tpr, thresholds = metrics.roc_curve(y, y_pred_proba)
+        roc_auc = metrics.auc(fpr, tpr)
+        print('metric Roc AUC:', roc_auc)
         print('feature:', feature)
         print('best_acc:', best_accuracy, 'at', accuracy_th)
         print('best_f1:', best_f1, 'at', f1_th)
@@ -189,6 +192,8 @@ def make_df(dff, file_name):
                 index += 1
             tpr = tpr_count/np.count_nonzero(y == 1)
             fpr = fpr_count/np.count_nonzero(y == 0)
+            tprs.append(tprs)
+            fprs.append(fpr)
             #tmp4 = metrics.balanced_accuracy_score(y, y_pred, adjusted = True)
             tmp4 = tpr - fpr
             # print('th:', th)
@@ -199,7 +204,8 @@ def make_df(dff, file_name):
             if tmp4 > best_youden:
                 best_youden = tmp4
                 youden_th = th
-            roc_auc = metrics.auc(fpr, tpr)
+        roc_auc = metrics.auc(fprs, tprs)
+        print('manual Roc AUC:', roc_auc)
             # #aucs.append(roc_auc)
             # tprs.append(tpr)
             # fprs.append(fpr)
