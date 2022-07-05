@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 
 from sklearn import metrics
+from itertools import combinations
 
 
 #functions for feature engineering
@@ -88,6 +89,32 @@ def get_feat_eng_df(df, feat_list):
     # print(feat_list)
     return df_tmp[feat_list]
 
+def make_feature_engineered_df(to_use):
+    #make one dataframe with all columns
+    df_all = to_use.copy()     #choose df to use here
+
+    print('feature engineering ...')
+    for n_pairs in np.arange(2,6):
+        print('n_pairs = ', n_pairs)
+        pairs_tmp = list(combinations(to_use.columns[1:], n_pairs))
+        pairing = 0
+        for pair in pairs_tmp:
+            key = ''
+            if n_pairs == 2:
+                key += 'ratio(' + pair[0] + '/'+ pair[1] + ')'
+                #print('adding:', key)
+                df_all = add_ratio_of(df_all, pair[0], pair[1], key)
+            key = 'Sum('
+            for p in pair:
+                key += p + '+'
+            key += ')'
+            #print('adding:', key)
+            df_all = add_sum_of(df_all, list(pair), key)
+            key2 = 'bl_ratio(' + key + ')'
+            #print('adding', key2)
+            df_all = add_ratio_of(df_all, key, 'EF  baseline (in %, numeric) ', key2)
+    print('features after engineering:', df_all.shape[1])
+    return df_all
 
 def get_sums_of(stri):
     ret = []
