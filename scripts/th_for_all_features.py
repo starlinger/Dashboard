@@ -8,7 +8,7 @@ from sklearn.preprocessing import MinMaxScaler
 from get_dataframes import get_no_rep_all, get_pos_no_rep, get_pos_rep, get_virus_negative
 from helper_functions import *
 
-#os.chdir('..')
+os.chdir('..')
 cwd = os.getcwd()
 paths = read_from_json(cwd + '/paths.json')
 path_to_csv = paths['path_to_csv']
