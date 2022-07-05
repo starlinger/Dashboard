@@ -57,10 +57,10 @@ def make_df(dff, file_name):
             y.astype(int)
             y_pred.astype(int)
             
-            #print('y_pred')
-            #print(y_pred)
-            #print('y')
-            #print(y)
+            print('y_pred')
+            print(y_pred)
+            print('y')
+            print(y)
             tmp0 = metrics.accuracy_score(y, y_pred)
             #print('acc:', tmp0, 'at', th)
             if tmp0 > best_accuracy:
