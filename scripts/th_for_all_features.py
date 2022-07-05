@@ -137,7 +137,6 @@ def make_df(dff, file_name):
         accuracys = []
         tprs = []
         fprs = []
-        aucs = []
         ths = []
         #print('sum of:', slct)
         accuracy_th = 0
