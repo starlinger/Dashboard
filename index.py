@@ -557,7 +557,7 @@ def update_auc_expl(dataset, slct, method):
 
     # tprs = [0]
     # fprs = [0]
-    tpr = []
+    tprs = []
     fprs = []
     ths = []
     thresholds = np.arange(0, np.max(dff['tmp']) + np.max(dff['tmp'])/100, step = np.max(dff['tmp'])/100)
