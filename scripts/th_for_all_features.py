@@ -96,7 +96,6 @@ def make_df(dff, file_name):
             if tmp4 > best_youden:
                 best_youden = tmp4
                 youden_th = th
-            roc_auc = metrics.auc(fpr, tpr)
             # #roc_auc = metrics.auc(fpr, tpr)
             # #aucs.append(roc_auc)
             # tprs.append(tpr)
