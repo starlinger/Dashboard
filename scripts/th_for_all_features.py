@@ -82,20 +82,21 @@ def make_df(dff, file_name):
             #     best_mcc = tmp3
             #     mcc_th = th
             #youden
-            # index = 0
-            # tpr_count = 0
-            # fpr_count = 0
-            # for sample in y:
-            #     if sample == 1 and y_pred[index] == 1: tpr_count += 1
-            #     if sample == 0 and y_pred[index] == 1: fpr_count += 1
-            #     index += 1
-            # tpr = tpr_count/np.count_nonzero(y == 1)
-            # fpr = fpr_count/np.count_nonzero(y == 0)
+            index = 0
+            tpr_count = 0
+            fpr_count = 0
+            for sample in y:
+                if sample == 1 and y_pred[index] == 1: tpr_count += 1
+                if sample == 0 and y_pred[index] == 1: fpr_count += 1
+                index += 1
+            tpr = tpr_count/np.count_nonzero(y == 1)
+            fpr = fpr_count/np.count_nonzero(y == 0)
             tmp4 = metrics.balanced_accuracy_score(y, y_pred, adjusted = True)
             #tmp4 = tpr - fpr
             if tmp4 > best_youden:
                 best_youden = tmp4
                 youden_th = th
+            roc_auc = metrics.auc(fpr, tpr)
             # #roc_auc = metrics.auc(fpr, tpr)
             # #aucs.append(roc_auc)
             # tprs.append(tpr)
@@ -107,7 +108,8 @@ def make_df(dff, file_name):
         print('best_cohens:', best_cohens, 'at', cohens_th)
         #print('best_mcc:', best_mcc, 'at', mcc_th)
         print('best_youden:', best_youden, 'at', youden_th)
-        data = {'Feature' : [feature], 'scaled_accuracy_th' : [accuracy_th], 'scaled_f1_th' : [f1_th], 'scaled_cohens_th' : [cohens_th], 'scaled_youden_th' : [youden_th]}
+        print('auc:', roc_auc)
+        data = {'Feature' : [feature], 'scaled_accuracy_th' : [accuracy_th], 'scaled_f1_th' : [f1_th], 'scaled_cohens_th' : [cohens_th], 'scaled_youden_th' : [youden_th], 'scaled_auc' : [roc_auc]}
         last = pd.DataFrame.from_dict(data)
         return_df = pd.concat([return_df, last])
 
@@ -118,6 +120,7 @@ def make_df(dff, file_name):
     cohens_ths = []
     mcc_ths = []
     youden_ths = []
+    aucs = []
     for feature in dff.columns[1:]:
         accuracys = []
         tprs = []
@@ -196,7 +199,7 @@ def make_df(dff, file_name):
             if tmp4 > best_youden:
                 best_youden = tmp4
                 youden_th = th
-            # #roc_auc = metrics.auc(fpr, tpr)
+            roc_auc = metrics.auc(fpr, tpr)
             # #aucs.append(roc_auc)
             # tprs.append(tpr)
             # fprs.append(fpr)
@@ -207,16 +210,20 @@ def make_df(dff, file_name):
         print('best_cohens:', best_cohens, 'at', cohens_th)
         #print('best_mcc:', best_mcc, 'at', mcc_th)
         print('best_youden:', best_youden, 'at', youden_th)
+        print('auc:', roc_auc)
         accuracy_ths.append(accuracy_th)
         f1_ths.append(f1_th)
         cohens_ths.append(cohens_th)
         #mcc_ths.append(mcc_th)
         youden_ths.append(youden_th)
+        aucs.append(roc_auc)
+
     return_df['accuracy_th'] = accuracy_ths
     return_df['f1_th'] = f1_ths
     return_df['cohens_th'] = cohens_ths
     #return_df['mcc_th'] = mcc_ths
     return_df['youden_th'] = youden_ths
+    return_df['roc_auc'] = aucs
     return_df.to_csv(file_name, index=False)
 
 
