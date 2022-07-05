@@ -48,7 +48,7 @@ def make_df(dff, file_name):
             #print(th)
             df_tmp = df_scaled.copy()
             y = df_tmp['Group'].to_numpy()
-            y_pred_proba = df_tmp.iloc[:,-1].to_numpy()
+            y_pred_proba = df_tmp[feature].to_numpy()
             #fpr, tpr, thresholds = metrics.roc_curve(y, y_pred_proba)
             df_tmp.loc[df_tmp[feature] < th, feature] = 1
             df_tmp.loc[df_tmp[feature] != 1, feature] = 0
@@ -110,7 +110,6 @@ def make_df(dff, file_name):
         print('best_cohens:', best_cohens, 'at', cohens_th)
         #print('best_mcc:', best_mcc, 'at', mcc_th)
         print('best_youden:', best_youden, 'at', youden_th)
-        print('auc:', roc_auc)
         data = {'Feature' : [feature], 'scaled_accuracy_th' : [accuracy_th], 'scaled_f1_th' : [f1_th], 'scaled_cohens_th' : [cohens_th], 'scaled_youden_th' : [youden_th], 'scaled_auc' : [roc_auc]}
         last = pd.DataFrame.from_dict(data)
         return_df = pd.concat([return_df, last])
@@ -205,17 +204,12 @@ def make_df(dff, file_name):
                 youden_th = th
         roc_auc = metrics.auc(fprs, tprs)
         print('manual Roc AUC:', roc_auc)
-            # #aucs.append(roc_auc)
-            # tprs.append(tpr)
-            # fprs.append(fpr)
-            # ths.append(th)
         print('feature:', feature)
         print('best_acc:', best_accuracy, 'at', accuracy_th)
         print('best_f1:', best_f1, 'at', f1_th)
         print('best_cohens:', best_cohens, 'at', cohens_th)
         #print('best_mcc:', best_mcc, 'at', mcc_th)
         print('best_youden:', best_youden, 'at', youden_th)
-        print('auc:', roc_auc)
         accuracy_ths.append(accuracy_th)
         f1_ths.append(f1_th)
         cohens_ths.append(cohens_th)
