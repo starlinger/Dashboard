@@ -565,6 +565,11 @@ def update_auc_expl(dataset, slct, method):
     till_ = np.max(dff['tmp']) + step_ + (step_ * 0.1)
     thresholds = np.arange(from_, till_, step = step_)
     #print('sum of:', slct)
+    print('min:', np.min(dff['tmp']))
+    print('max:', np.max(dff['tmp']))
+    print('from:', from_)
+    print('till:', till_)
+    print('step:',step_)
     opt_df = make_optimized_dataframe(dff.iloc[:,0].to_numpy(), dff.iloc[:,-1].to_numpy(), thresholds, False, reverse=True)
     opt_table = dash_table.DataTable(
                     opt_df.to_dict('records'), [{"name": ['optimized data', i], "id": i} for i in opt_df.columns],
@@ -587,7 +592,7 @@ def update_auc_expl(dataset, slct, method):
                 merge_duplicate_headers=True,
             )
     for th in thresholds:
-        #print(th)
+        print('th:', th)
         df_tmp = dff.copy()
         y = df_tmp.iloc[:,0].to_numpy()
         y_pred_proba = df_tmp.iloc[:,-1].to_numpy()
@@ -606,6 +611,8 @@ def update_auc_expl(dataset, slct, method):
             index += 1
         tpr = tpr_count/np.count_nonzero(y == 1)
         fpr = fpr_count/np.count_nonzero(y == 0)
+        print('tpr:', tpr)
+        print('fpr:', fpr)
         tprs.append(tpr)
         fprs.append(fpr)
         ths.append(th)
