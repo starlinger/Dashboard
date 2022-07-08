@@ -106,7 +106,7 @@ def make_feature_engineered_df(to_use):
     print('logs added:', log_count)
     for n_pairs in np.arange(2,6):
         print('n_pairs = ', n_pairs)
-        pairs_tmp = list(combinations(to_use.columns[1:], n_pairs))
+        pairs_tmp = list(combinations(df_all.columns[1:], n_pairs))
         pair_count = 0
         ratio_count = 0
         for pair in pairs_tmp:
