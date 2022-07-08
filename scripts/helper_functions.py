@@ -25,6 +25,11 @@ def add_ratio_of(df, feature1, feature2, key):
     ret[key] = df[feature1] / (df[feature2] + 0.01)
     return ret
 
+def add_log_of(df, f1, key):
+    ret = df.copy()
+    ret[key] = np.log(df[f1]+1)
+    return ret
+
 #returns a list of values which are engineered from existing features
 def get_eng_values(df, feat_list):
     ret = []
@@ -94,16 +99,23 @@ def make_feature_engineered_df(to_use):
     df_all = to_use.copy()     #choose df to use here
 
     print('feature engineering ...')
+    log_count = 0
+    for feat in to_use.columns[1:]:
+        df_all = add_ratio_of(df_all, feat, 'log(' + feat + ')')
+        log_count += 1
+    print('logs added:', log_count)
     for n_pairs in np.arange(2,6):
         print('n_pairs = ', n_pairs)
         pairs_tmp = list(combinations(to_use.columns[1:], n_pairs))
-        pairing = 0
+        pair_count = 0
+        ratio_count = 0
         for pair in pairs_tmp:
             key = ''
             if n_pairs == 2:
                 key += 'ratio(' + pair[0] + '/'+ pair[1] + ')'
                 #print('adding:', key)
                 df_all = add_ratio_of(df_all, pair[0], pair[1], key)
+                ratio_count += 1
             key = 'Sum('
             for p in pair:
                 key += p + '+'
@@ -113,6 +125,9 @@ def make_feature_engineered_df(to_use):
             key2 = 'bl_ratio(' + key + ')'
             #print('adding', key2)
             df_all = add_ratio_of(df_all, key, 'EF  baseline (in %, numeric) ', key2)
+            pair_count += 1
+        print(n_pairs, 'added:', pair_count)
+    print('ratios added:', ratio_count)
     print('features after engineering:', df_all.shape[1])
     return df_all
 
