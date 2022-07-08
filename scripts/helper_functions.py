@@ -109,7 +109,7 @@ def make_feature_engineered_df(to_use):
     for n_pairs in np.arange(2,6):
         sub_pair_count = 0
         print('n_pairs = ', n_pairs)
-        pairs_tmp = list(combinations(df_all.columns[1:], n_pairs))
+        pairs_tmp = list(combinations(to_use.columns[1:], n_pairs))
         for pair in pairs_tmp:
             key = ''
             if n_pairs == 2:
