@@ -101,7 +101,7 @@ def make_feature_engineered_df(to_use):
     print('feature engineering ...')
     log_count = 0
     for feat in to_use.columns[1:]:
-        df_all = add_ratio_of(df_all, feat, 'log(' + feat + ')')
+        df_all = add_log_of(df_all, feat, 'log(' + feat + ')')
         log_count += 1
     print('logs added:', log_count)
     for n_pairs in np.arange(2,6):
