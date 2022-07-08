@@ -104,11 +104,12 @@ def make_feature_engineered_df(to_use):
         df_all = add_log_of(df_all, feat, 'log(' + feat + ')')
         log_count += 1
     print('logs added:', log_count)
+    ratio_count = 0
+    pair_count = 0
     for n_pairs in np.arange(2,6):
+        sub_pair_count = 0
         print('n_pairs = ', n_pairs)
         pairs_tmp = list(combinations(df_all.columns[1:], n_pairs))
-        pair_count = 0
-        ratio_count = 0
         for pair in pairs_tmp:
             key = ''
             if n_pairs == 2:
@@ -126,7 +127,9 @@ def make_feature_engineered_df(to_use):
             #print('adding', key2)
             df_all = add_ratio_of(df_all, key, 'EF  baseline (in %, numeric) ', key2)
             pair_count += 1
-        print(n_pairs, 'added:', pair_count)
+            sub_pair_count += 1
+        print(n_pairs, 'sums added:', sub_pair_count)
+    print('sums added:', pair_count)
     print('ratios added:', ratio_count)
     print('features after engineering:', df_all.shape[1])
     return df_all
