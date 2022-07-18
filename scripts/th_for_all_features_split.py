@@ -127,27 +127,30 @@ def make_df(dff, file_name, random_state = None):
 
     #for original
 
-    X = dff.iloc[:,1:].to_numpy()
-    y = dff['Group'].to_numpy()
+    # X = dff.iloc[:,1:].to_numpy()
+    # y = dff['Group'].to_numpy()
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=random_state, stratify = y)
-    print('X_train.shape:', X_train.shape)
-    print('len(X_train[:]):', len(X_train[:]))
+    # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=random_state, stratify = y)
+    # print('X_train.shape:', X_train.shape)
+    # print('len(X_train[:]):', len(X_train[:]))
 
     accuracy_ths = []
     f1_ths = []
     cohens_ths = []
     mcc_ths = []
     youden_ths = []
-    aucs = []
+    train_aucs = []
+    test_aucs = []
     print('[................................................................]')
     print('[', end = '')
     dot_step = int(len(dff.columns[1:])/64)
     f_index = 0
-    for feature in X_train[:,:]:
+    for feature in dff.columns[1:]:
         accuracys = []
-        tprs = []
-        fprs = []
+        train_tprs = []
+        train_fprs = []
+        test_tprs = []
+        test_fprs = []
         ths = []
         #print('sum of:', slct)
         accuracy_th = 0
@@ -173,6 +176,7 @@ def make_df(dff, file_name, random_state = None):
             df_tmp = dff.copy()
             y = df_tmp['Group'].to_numpy()
             y_pred_proba = df_tmp.iloc[:,-1].to_numpy()
+
             #fpr, tpr, thresholds = metrics.roc_curve(y, y_pred_proba)
             #print('before')
             #print(df_tmp[feature].to_numpy())
@@ -185,6 +189,7 @@ def make_df(dff, file_name, random_state = None):
             y.astype(int)
             y_pred.astype(int)
             
+            y_pred_train, y_pred_test, y_train, y_test = train_test_split(y_pred, y, test_size=0.2, random_state=random_state, stratify = y)
             #print('y_pred')
             #print(y_pred)
             #print('y')
@@ -213,17 +218,26 @@ def make_df(dff, file_name, random_state = None):
             index = 0
             tp_count = 0
             fp_count = 0
-            for sample in y:
+            for sample in y_train:
                 if sample == 1 and y_pred[index] == 1: tp_count += 1
                 if sample == 0 and y_pred[index] == 1: fp_count += 1
                 index += 1
-            tpr = tp_count/np.count_nonzero(y == 1)
-            fpr = fp_count/np.count_nonzero(y == 0)
-            # print('th:', th)
-            # print('tpr:', tpr)
-            # print('fpr:', fpr)
-            tprs.append(tpr)
-            fprs.append(fpr)
+            tpr = tp_count/np.count_nonzero(y_train == 1)
+            fpr = fp_count/np.count_nonzero(y_train == 0)
+            train_tprs.append(tpr)
+            train_fprs.append(fpr)
+
+            index = 0
+            tp_count = 0
+            fp_count = 0
+            for sample in y_test:
+                if sample == 1 and y_pred[index] == 1: tp_count += 1
+                if sample == 0 and y_pred[index] == 1: fp_count += 1
+                index += 1
+            tpr = tp_count/np.count_nonzero(y_test == 1)
+            fpr = fp_count/np.count_nonzero(y_test == 0)
+            test_tprs.append(tpr)
+            test_fprs.append(fpr)
             #tmp4 = metrics.balanced_accuracy_score(y, y_pred, adjusted = True)
             tmp4 = tpr - fpr
             # print('th:', th)
@@ -236,7 +250,8 @@ def make_df(dff, file_name, random_state = None):
                 youden_th = th
         if f_index%dot_step == 0: print('.', end = '', flush=True)
         f_index += 1
-        roc_auc = metrics.auc(fprs, tprs)
+        train_roc_auc = metrics.auc(train_fprs, train_tprs)
+        test_roc_auc = metrics.auc(test_fprs, test_tprs)
         # print('feature:', feature)
         # print('manual Roc AUC:', roc_auc)
         # print('best_acc:', best_accuracy, 'at', accuracy_th)
@@ -249,7 +264,8 @@ def make_df(dff, file_name, random_state = None):
         cohens_ths.append(cohens_th)
         #mcc_ths.append(mcc_th)
         youden_ths.append(youden_th)
-        aucs.append(roc_auc)
+        train_aucs.append(train_roc_auc)
+        test_aucs.append(test_roc_auc)
     print(']')
 
     return_df['accuracy_th'] = accuracy_ths
@@ -257,7 +273,8 @@ def make_df(dff, file_name, random_state = None):
     return_df['cohens_th'] = cohens_ths
     #return_df['mcc_th'] = mcc_ths
     return_df['youden_th'] = youden_ths
-    return_df['roc_auc'] = aucs
+    return_df['train_roc_auc'] = train_aucs
+    return_df['test_roc_auc'] = test_aucs
     return_df.to_csv(file_name, sep = ';', index=False)
 
 if __name__ == '__main__':
@@ -280,9 +297,9 @@ if __name__ == '__main__':
     #virus_negative
     df = get_virus_negative(path = cwd + '/assets/data/2022-03-25_virusneg.csv')
     df_all = make_feature_engineered_df(df)
-    make_df(df_all, cwd + path_to_datasets + 'virus_negative/thresholds_all.csv', random_state = random_state)
+    make_df(df_all, cwd + path_to_datasets + 'virus_negative/thresholds_all_split.csv', random_state = random_state)
 
     df_reduced = get_virus_negative(path = cwd + '/assets/data/2022-03-25_virusneg.csv', reduced =True)
     df_all_reduced = make_feature_engineered_df(df)
-    make_df(df_all_reduced, cwd + path_to_datasets + '/virus_negative/thresholds_all_reduced.csv', random_state = random_state)
+    make_df(df_all_reduced, cwd + path_to_datasets + '/virus_negative/thresholds_all_reduced_split.csv', random_state = random_state)
 
