@@ -132,7 +132,7 @@ def make_df(dff, file_name, random_state = None):
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=random_state, stratify = y)
     print('X_train.shape:', X_train.shape)
-    print('len(X_train[:,:]):', len(X_train[:,:]))
+    print('len(X_train[:]):', len(X_train[:]))
 
     accuracy_ths = []
     f1_ths = []
