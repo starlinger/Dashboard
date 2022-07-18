@@ -131,6 +131,7 @@ def make_feature_engineered_df(to_use):
         print(n_pairs, 'sums added:', sub_pair_count)
     print('sums added:', pair_count)
     print('ratios added:', ratio_count)
+    print('bl ratios added:', 0)
     print('features after engineering:', df_all.shape[1])
     return df_all
 
