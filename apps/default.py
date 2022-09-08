@@ -212,18 +212,18 @@ for folder in os.listdir(cwd + path_to_datasets):
     else: print('unknown folder')
 
 scaler = MinMaxScaler()
-X = dataset_dict['Virus Positive (No Rep)']['df'].iloc[:,1:].to_numpy()
-y = dataset_dict['Virus Positive (No Rep)']['df'].iloc[:,0].to_numpy()
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1, stratify = y)
+# X = dataset_dict['Virus Positive (No Rep)']['df'].iloc[:,1:].to_numpy()
+# y = dataset_dict['Virus Positive (No Rep)']['df'].iloc[:,0].to_numpy()
+# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1, stratify = y)
 
-print('X_train')
-print(X_test[:,0])
+# print('X_train')
+# print(X_test[:,0])
 
-X_scaled = scaler.fit_transform(X_train)
-X_test_scaled = scaler.transform(X_test)
+# X_scaled = scaler.fit_transform(X_train)
+# X_test_scaled = scaler.transform(X_test)
 
-print('scaled')
-print(X_test_scaled[:,0])
+# print('scaled')
+# print(X_test_scaled[:,0])
 
 df_label_list = []
 for entry in dataset_dict:
