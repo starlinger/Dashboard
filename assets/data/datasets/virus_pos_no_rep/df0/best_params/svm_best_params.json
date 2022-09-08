@@ -1,1 +1,0 @@
-{"cv_score": 0.8500263504611331, "test_score": 0.9128205128205128, "params": {"C": 0.24999999999999997, "coef0": 0.0, "degree": 3, "gamma": "auto", "kernel": "linear", "probability": true, "shrinking": true, "tol": 0.0001}}
