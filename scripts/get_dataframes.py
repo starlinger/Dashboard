@@ -3,7 +3,7 @@ import numpy as np
 from scipy import stats
 
 
-def get_pos_no_rep(path='/assets/data/2022-03-25_norep_all.csv', reduced =  False):
+def get_pos_no_rep(path='/assets/data/csv/2022-03-25_norep_all.csv', reduced =  False):
 
     df = pd.read_csv(path, sep=';')
     df = df.iloc[:,np.r_[1:2, 4:5, 17:26]]  #für virus positive aus no_rep_all
@@ -30,7 +30,7 @@ def get_pos_no_rep(path='/assets/data/2022-03-25_norep_all.csv', reduced =  Fals
     return df
 
 
-def get_virus_negative(path='/assets/data/2022-03-25_virusneg.csv', reduced =  False):
+def get_virus_negative(path='/assets/data/csv/2022-03-25_virusneg.csv', reduced =  False):
     df = pd.read_csv(path, sep=';')
     df = df.iloc[:,np.r_[1:2, 4:5, 17:25]]   #for virusnegative and rep_all
     
@@ -52,7 +52,7 @@ def get_virus_negative(path='/assets/data/2022-03-25_virusneg.csv', reduced =  F
     print(df.columns)
     return df
 
-def get_pos_rep(path='/assets/data/2022-05-30-B19_pos.csv', reduced =  False):
+def get_pos_rep(path='/assets/data/csv/2022-05-30-B19_pos.csv', reduced =  False):
     df = pd.read_csv(path, sep=';')
     df.rename(columns={'EMB: CD45R0 (numeric) ':'EMB: CD45 (numeric) '}, inplace=True)
     df = df.iloc[:,np.r_[1:2, 4:5, 16:25]]    #for viruspositive
@@ -77,7 +77,7 @@ def get_pos_rep(path='/assets/data/2022-05-30-B19_pos.csv', reduced =  False):
     print(df.columns)
     return df
 
-def get_no_rep_all(path='/assets/data/2022-03-25_norep_all.csv', reduced =  False):
+def get_no_rep_all(path='/assets/data/csv/2022-03-25_norep_all.csv', reduced =  False):
     df = pd.read_csv(path, sep=';')
 
     df = df.iloc[:,np.r_[1:2, 4:5, 17:25]]   #for virusnegative and rep_all
