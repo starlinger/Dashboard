@@ -2,7 +2,7 @@
 apps/__pycache__/
 __pycache__/
 paths.json
+assets/data/datasets/*
 assets/data/csv/2022-03-25_norep_all.csv
 assets/data/csv/2022-03-25_virusneg.csv
 assets/data/csv/2022-05-30-B19_pos.csv
-paths.json
