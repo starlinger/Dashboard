@@ -11,11 +11,6 @@ from sklearn.preprocessing import MinMaxScaler
 from get_dataframes import get_no_rep_all, get_pos_no_rep, get_pos_rep, get_virus_negative
 from helper_functions import *
 
-"""
-Script that calculates the auc and other metrics for a single features for each possible threshold.
-Fixed random state and comparison to model pipeline (which splits into train/test sets)
-"""
-
 os.chdir('..')
 cwd = os.getcwd()
 paths = read_from_json(cwd + '/paths.json')
@@ -224,8 +219,8 @@ def make_df(dff, file_name, random_state = None):
             tp_count = 0
             fp_count = 0
             for sample in y_train:
-                if sample == 1 and y_pred[index] == 1: tp_count += 1
-                if sample == 0 and y_pred[index] == 1: fp_count += 1
+                if sample == 1 and y_pred_train[index] == 1: tp_count += 1
+                if sample == 0 and y_pred_train[index] == 1: fp_count += 1
                 index += 1
             tpr = tp_count/np.count_nonzero(y_train == 1)
             fpr = fp_count/np.count_nonzero(y_train == 0)
@@ -236,8 +231,8 @@ def make_df(dff, file_name, random_state = None):
             tp_count = 0
             fp_count = 0
             for sample in y_test:
-                if sample == 1 and y_pred[index] == 1: tp_count += 1
-                if sample == 0 and y_pred[index] == 1: fp_count += 1
+                if sample == 1 and y_pred_test[index] == 1: tp_count += 1
+                if sample == 0 and y_pred_test[index] == 1: fp_count += 1
                 index += 1
             tpr = tp_count/np.count_nonzero(y_test == 1)
             fpr = fp_count/np.count_nonzero(y_test == 0)
@@ -273,6 +268,7 @@ def make_df(dff, file_name, random_state = None):
         test_aucs.append(test_roc_auc)
     print(']')
 
+    return_df['features'] = dff.columns[1:]
     return_df['accuracy_th'] = accuracy_ths
     return_df['f1_th'] = f1_ths
     return_df['cohens_th'] = cohens_ths
@@ -280,7 +276,7 @@ def make_df(dff, file_name, random_state = None):
     return_df['youden_th'] = youden_ths
     return_df['train_roc_auc'] = train_aucs
     return_df['test_roc_auc'] = test_aucs
-    return_df.to_csv(file_name, sep = ';', index=False)
+    return_df.to_csv(file_name + '_' + str(random_state) + '.csv', sep = ';', index=False)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
@@ -302,9 +298,9 @@ if __name__ == '__main__':
     #virus_negative
     df = get_virus_negative(path = cwd + '/assets/data/2022-03-25_virusneg.csv')
     df_all = make_feature_engineered_df(df)
-    make_df(df_all, cwd + path_to_datasets + 'virus_negative/thresholds_all_split.csv', random_state = random_state)
+    make_df(df_all, cwd + path_to_datasets + '/thresholds_all_split', random_state = random_state)
 
     df_reduced = get_virus_negative(path = cwd + '/assets/data/2022-03-25_virusneg.csv', reduced =True)
     df_all_reduced = make_feature_engineered_df(df)
-    make_df(df_all_reduced, cwd + path_to_datasets + '/virus_negative/thresholds_all_reduced_split.csv', random_state = random_state)
+    make_df(df_all_reduced, cwd + path_to_datasets + '/thresholds_all_reduced_split', random_state = random_state)
 
