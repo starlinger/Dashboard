@@ -2,7 +2,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/DieBirke/Dashboard">
-    <img src="assets/hth_logo_light.png" alt="Logo" width="80" height="80">
+    <img src="assets/hth_logo_light.png" alt="Logo" width="512" height="152">
   </a>
 
   <h3 align="center">Howto Health Dashboard</h3>
