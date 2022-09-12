@@ -2,6 +2,13 @@ import pandas as pd
 import numpy as np
 from scipy import stats
 
+"""
+Because the data from the .csv have to be handled differently there are
+four different functions for each cohort. Depending on how you handle
+the cohorts you might have to adjust a function. (Group 3 might be handled as stable or can be dropped entirely)
+reduced = True will filter every specimen that is more than 3 standard deviations away from the mean.
+"""
+
 
 def get_pos_no_rep(path='/assets/data/csv/2022-03-25_norep_all.csv', reduced =  False):
 

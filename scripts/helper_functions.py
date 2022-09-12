@@ -8,6 +8,10 @@ import pandas as pd
 from sklearn import metrics
 from itertools import combinations
 
+"""
+Functions to gather, augment, summarize data or prepare for visualisation. 
+"""
+
 
 #functions for feature engineering
 def add_sum_of(df, columns, key):
@@ -152,15 +156,6 @@ def get_ratios_of(stri):
     return ret0, ret1
 
 def get_bl_ratios_of(stri):
-    # ret = []
-    # if stri[:3] == 'Sum':
-    #     f0, f1 = get_sums_of(stri[3:])
-    # elif stri[:5] == 'ratio':
-    #     f0, f1 = get_ratios_of(stri[5:])
-    # else: ret.append(stri)
-    # print('ret get bl ratios of')
-    # print('[', stri)
-    # print('EF baseline (in %, numeric) ]')
     return stri
     
 def get_models(path = 'assets/data/datasets/virus_pos_no_rep/df0/best_models/'):

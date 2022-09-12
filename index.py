@@ -14,7 +14,6 @@ import argparse
 
 from scripts.get_dataframes import get_pos_no_rep, get_virus_negative, get_no_rep_all, get_pos_rep
 from scripts.make_figures import *
-#make_optimized_dataframe, make_perct_histogram, make_roc_figure, make_confusion_matrix, make_feature_importances, make_invariable_dataframe, make_radar_plot
 import scripts.helper_functions as hf
 from scipy.__config__ import show
 
@@ -39,6 +38,19 @@ from app import server
 
 # Connect to your app pages
 from apps import data_exploration, model_prediction, default
+
+"""
+Main script, run this to start the dashboard.
+When run this script loads all components and variables on startup, this script is also the container
+for the layouts. THe sidebar and main pages are loaded in here from the other scripts.
+It contains a few constants but most constants and variables are loaded from the deafult.py script but
+are then used here for all the callbacks.
+In this script the callbacks are defined which update the dashboard.
+
+https://plotly.com/dash/
+dash plotly bootstrap (Cols and Rows) for the Layout. https://dash-bootstrap-components.opensource.faculty.ai/
+Data in .csv form on disk.
+"""
 
 cwd = os.getcwd()
 colors = ['#37AA9C', '#00ccff', '#94F3E4']
@@ -212,49 +224,11 @@ eng_dfs_dict = hf.get_eng_dfs(path = cwd + path_to_datasets + 'virus_pos_no_rep/
 
 update_feat_inputs(list(dataset_dict.keys())[0])
 
-#patiend_ids = np.arange(0, df.shape[0])
-# dd_options = {}
-# for feat in features:
-#     # tmp = {'label': feat, 'value': feat}
-#     # dd_options.append(tmp)
-#     dd_options[feat] = feat
 loading_style = {'position': 'absolute', 'align-self': 'center'}
 
-logo_card = dbc.Card([
-    dbc.CardImg(src = '/assets/hth_logo.png', title = 'how to Health GmbH', top = True),
-    dbc.CardBody([
-        dbc.CardLink('howto.health', href= 'https://business.howto.health/', target = '_blank'),
-        html.Label('E-Mail_data: business@howto.health'),
-        html.Label('Phone: +49 (0)30 57713053')
-    ])
-], color = colors_dict['lightbg'])
 
-# radar_plot_card = data_exploration.radar_plot_card
-# feat_figure_card = data_exploration.feat_figure_card
-# auc_plot_card = data_exploration.auc_plot_card
-
-#model_auc_card = model_prediction.model_auc_card
-
-sidebar = html.Div(
-    [
-        #html.H2("Sidebar", className="display-4"),
-        logo_card,
-        html.Hr(),
-        html.P(
-            "Display", className="lead"
-        ),
-        dbc.Nav(
-            [
-                dbc.NavLink("Home", href="/", active="exact"),
-                dbc.NavLink("Data Exploration", href="/apps/data_exploration", active="exact"),
-                dbc.NavLink("Model Prediction", href="/apps/model_prediction", active="exact"),
-            ],
-            vertical=True,
-            pills=True,
-        ),
-    ],
-    style=SIDEBAR_STYLE,
-)
+logo_card = default.logo_card
+sidebar = default.sidebar
 
 content = html.Div(id="page-content", children=[], style=CONTENT_STYLE)
 

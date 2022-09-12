@@ -7,6 +7,10 @@ from sklearn.preprocessing import MinMaxScaler
 from get_dataframes import get_no_rep_all, get_pos_no_rep, get_pos_rep, get_virus_negative
 import helper_functions as hf
 
+"""
+Script that calculates the auc and other metrics for all features for each possible threshold.
+"""
+
 os.chdir('..')
 cwd = os.getcwd()
 paths = hf.read_from_json(cwd + '/paths.json')

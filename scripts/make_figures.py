@@ -18,6 +18,12 @@ import plotly.express as px
 import plotly.figure_factory as ff
 import plotly.graph_objects as go
 
+"""
+Functions which have the raw data as input and output a custom plotly graph.
+There are a lot of variables that go into making a visually sound graph that fits
+into the page of the dashboard.
+"""
+
 colors = ['#37AA9C', '#00ccff', '#94F3E4']
 colors_dict = {'background' : 'rgb(25, 25, 31)',
         'lightbg' : 'rgb(30, 30, 35)'}

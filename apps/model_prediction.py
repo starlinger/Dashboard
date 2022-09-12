@@ -24,6 +24,10 @@ from apps import data_exploration, default
 
 '''
 Model prediction
+
+One page which can be displayed on the main page as content.
+This script defines the layout and functions that are specific to
+the model page. Otherwise they would be defined in the default.py script.
 '''
 
 colors = ['#37AA9C', '#00ccff', '#94F3E4']

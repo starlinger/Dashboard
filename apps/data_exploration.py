@@ -22,21 +22,12 @@ import dash_bootstrap_components as dbc
 from apps import model_prediction, default
 
 '''
-Main Dashboard script for displaying various plots regarding HeartBiopsi data. https://plotly.com/dash/
-dash plotly bootstrap (Cols and Rows) for the Layout. https://dash-bootstrap-components.opensource.faculty.ai/
-Data in .csv form on disk. Models exported in .pkl form on disk
+Data exploration
 
-Functionality
-Display .csv data, input patient data, display input in relation, display prediction.
-Multiple dataframes, multiple models
+One page which can be displayed on the main page as content.
+This script defines the layout and functions that are specific to
+the data exploration. Otherwise they would be defined in the default.py script.
 '''
-#TODO
-#1. daten normalisieren - done
-#2. auc curve classifier mit threshold slider
-#3. auc von feature (summen, ratios etc) - Done
-#4. pipeline voll automatisieren
-#5. multi page (with sidebar) - done
-#6. save and import feature engineered columns
 
 colors_dict = {'background' : 'rgb(25, 25, 31)',
         'lightbg' : 'rgb(30, 30, 35)'}

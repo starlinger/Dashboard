@@ -11,6 +11,11 @@ from sklearn.preprocessing import MinMaxScaler
 from get_dataframes import get_no_rep_all, get_pos_no_rep, get_pos_rep, get_virus_negative
 from helper_functions import *
 
+"""
+Script that calculates the auc and other metrics for a single features for each possible threshold.
+Fixed random state and comparison to model pipeline (which splits into train/test sets)
+"""
+
 os.chdir('..')
 cwd = os.getcwd()
 paths = read_from_json(cwd + '/paths.json')

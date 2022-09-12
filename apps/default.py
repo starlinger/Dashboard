@@ -23,13 +23,14 @@ import dash_bootstrap_components as dbc
 from apps import data_exploration, model_prediction
 
 '''
-Main Dashboard script for displaying various plots regarding HeartBiopsi data. https://plotly.com/dash/
-dash plotly bootstrap (Cols and Rows) for the Layout. https://dash-bootstrap-components.opensource.faculty.ai/
-Data in .csv form on disk. Models exported in .pkl form on disk
+This is the default page which is loaded on startup (when you run index.py)
+This defines the sidebar (which is always present on the left side) and
+here is defined where the data comes from. This script calls the
+function to gather all the data and saves it in fitting datassctructures.
+Other scripts then access the data through the variables/data structures.
 
-Functionality
-Display .csv data, input patient data, display input in relation, display prediction.
-Multiple dataframes, multiple models
+Most important are the .csv data and model data which must be present in the specified folder.
+The folder is specified in paths.json so nothing should be hardcoded. (Unless I missed something)
 '''
 cwd = os.getcwd()
 
@@ -153,12 +154,6 @@ def make_specs(n, type = 'xy', max_cols = 2, quad = False, rugs = False, b = 0.0
         cols = m
         for i in np.arange(0, rows):
             specs.append(copy.deepcopy(to_append))
-        # print('before:')
-        # print(specs)
-        # if n%max_cols != 0 and n > max_cols:
-        #     for j in np.arange(1, n%max_cols):
-        #         specs[-1][-j] = None
-        # print('\nafter:')
         print(specs)
     if rugs:
         rows = rows*2
@@ -170,6 +165,35 @@ def make_specs(n, type = 'xy', max_cols = 2, quad = False, rugs = False, b = 0.0
     return rows, cols, specs
 
 app = Dash(__name__, external_stylesheets = [dbc.themes.BOOTSTRAP])
+
+logo_card = dbc.Card([
+    dbc.CardImg(src = '/assets/hth_logo.png', title = 'how to Health GmbH', top = True),
+    dbc.CardBody([
+        dbc.CardLink('howto.health', href= 'https://business.howto.health/', target = '_blank'),
+        html.Label('E-Mail_data: business@howto.health'),
+        html.Label('Phone: +49 (0)30 57713053')
+    ])
+], color = colors_dict['lightbg'])
+
+sidebar = html.Div(
+    [
+        logo_card,
+        html.Hr(),
+        html.P(
+            "Display", className="lead"
+        ),
+        dbc.Nav(
+            [
+                dbc.NavLink("Home", href="/", active="exact"),
+                dbc.NavLink("Data Exploration", href="/apps/data_exploration", active="exact"),
+                dbc.NavLink("Model Prediction", href="/apps/model_prediction", active="exact"),
+            ],
+            vertical=True,
+            pills=True,
+        ),
+    ],
+    style=SIDEBAR_STYLE,
+)
 
 #get data
 dataset_dict = {}
@@ -212,18 +236,6 @@ for folder in os.listdir(cwd + path_to_datasets):
     else: print('unknown folder')
 
 scaler = MinMaxScaler()
-# X = dataset_dict['Virus Positive (No Rep)']['df'].iloc[:,1:].to_numpy()
-# y = dataset_dict['Virus Positive (No Rep)']['df'].iloc[:,0].to_numpy()
-# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1, stratify = y)
-
-# print('X_train')
-# print(X_test[:,0])
-
-# X_scaled = scaler.fit_transform(X_train)
-# X_test_scaled = scaler.transform(X_test)
-
-# print('scaled')
-# print(X_test_scaled[:,0])
 
 df_label_list = []
 for entry in dataset_dict:
